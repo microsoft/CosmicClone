@@ -1,0 +1,35 @@
+﻿<Window x:Class="CosmicCloneUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CosmicCloneUI"
+        mc:Ignorable="d"
+        Title="CosmicClone v2.0" Height="500" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="/Images/CosmosIcon2.ico">
+    <Grid>
+        <Border BorderBrush="Black" Background="LightGray" BorderThickness="1" HorizontalAlignment="Left" Height="80" VerticalAlignment="Top" Width="790" Margin="0,0,0,0">
+            <!--<StackPanel>
+                <TextBlock Text="Cosmic Clone" FontSize="20" HorizontalAlignment="Center"/>
+                <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center" Text="Cosmos Database Backup restore copy utility" 
+                           FontSize="15" Margin="10,0,10,0"/>
+            </StackPanel>-->
+            <StackPanel Orientation="Horizontal">
+                <Image x:Name="logo1" Width="75" Height="80" HorizontalAlignment="Left" Source="/Images/cosmosIcon1.png" Margin="0,0,0,0"/>
+                <Image x:Name="headerlogo" Width="640" Height="80" HorizontalAlignment="Left" Source="/Images/cosmicclonelogo.png" Margin="0,0,0,0"/>            
+                <Image x:Name="logo2" Width="75" Height="80" Source="/Images/cosmosIcon1.png" Margin="0,0,0,0"/>
+            </StackPanel>
+        </Border>
+        <Border Background="WhiteSmoke" BorderThickness="1" HorizontalAlignment="Left" Height="390" Margin="00,80,0,0" VerticalAlignment="Top" Width="790">
+            <Grid HorizontalAlignment="Left" Height="390" Margin="00,00,0,0" VerticalAlignment="Top" Width="790">
+                <StackPanel HorizontalAlignment="Left" Height="320" Margin="00,00,0,0" VerticalAlignment="Top" Width="790">
+                    <Frame x:Name="_mainFrame" NavigationUIVisibility="Hidden" LoadCompleted="MainFrameLoaded" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="70" Margin="0,300,0,0" Width="790">
+                    <Button x:Name="btn_previous" Content="Previous" MinWidth="100" Height="30" Margin="450,0,0,0" Click="BtnClickPrevious" />
+                    <Button x:Name="btn_next" Content="Next" MinWidth="100" Height="30" Margin="10,0,0,0" Click="BtnClickNext" />
+                    <Button x:Name="btn_finish" Content="Finish" MinWidth="100" Height="30" Margin="10,0,0,0" Click="BtnClickFinish" />
+                </StackPanel>
+            </Grid>
+        </Border>        
+    </Grid>
+</Window>

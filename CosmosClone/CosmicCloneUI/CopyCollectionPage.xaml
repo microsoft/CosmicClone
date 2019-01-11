@@ -1,0 +1,40 @@
+﻿<Page x:Class="CosmicCloneUI.CopyCollectionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CosmicCloneUI"
+      mc:Ignorable="d" 
+      d:DesignHeight="320" d:DesignWidth="800"
+      Title="CopyCollectionPage">
+
+    <Grid>
+        <StackPanel Margin="15,10,5,5">
+            <StackPanel x:Name="CollectionReadStackPanel" Margin="0,5,0,0">
+                <TextBlock Text="Reading Collection"/>
+                <ProgressBar x:Name="ReadProgress" Height="15" Margin="0,2,10,5" Value="0"/>
+            </StackPanel>
+            <StackPanel x:Name="CollectionWriteStackPanel" Margin="0,5,0,0">
+                <TextBlock Text="Writing Collection"/>
+                <ProgressBar x:Name="WriteProgress" Height="15" Margin="0,2,10,5" Value="0"/>
+            </StackPanel>
+            <StackPanel x:Name="ScrubStackPanel" Margin="0,5,0,0">
+                <TextBlock Text="Anonymization progress"/>
+                <ProgressBar x:Name="ScrubProgress" Height="15" Margin="0,2,10,5" Value="0"/>
+            </StackPanel>
+            <StackPanel Margin="0,10,0,0">
+                <Button x:Name="ShowStatusButton" Content="Hide status" Margin="0,0,701,0" RenderTransformOrigin="15.969,-5.085" FontSize="9" Click="ShowStatusButton_Click"/>
+                <Border x:Name="StatusTextBlockBorder" BorderThickness="1"  Margin="0,5,10,2">
+                    <!--<ScrollViewer x:Name="StatusTextblockScrollViewer" HorizontalScrollBarVisibility="Auto" >-->
+                        <!--<TextBlock x:Name="StatusTextBlock" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="90" RenderTransformOrigin="0.498,1.559" Opacity="0.9 " FontSize="10"><Run Text="Copy Status Log"/></TextBlock>-->
+                    <!--</ScrollViewer>-->
+                    <TextBox x:Name="StatusTextBlock" Height="100" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Focusable="True" IsReadOnly="True">
+                        
+                    </TextBox>
+
+                </Border>
+            </StackPanel>
+            
+        </StackPanel>
+    </Grid>
+</Page>

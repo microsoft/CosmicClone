@@ -1,0 +1,64 @@
+﻿<Page x:Class="CosmicCloneUI.DataAnonymizationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CosmicCloneUI"
+      mc:Ignorable="d" 
+      d:DesignHeight="320" d:DesignWidth="800"
+      Title="DataAnonymizationPage">
+
+    <Grid>
+        <StackPanel>            
+            <TextBlock FontSize="15" HorizontalAlignment="Left" Margin="20,0,0,0">                 
+                <Span>Enter</Span> 
+                <Span  FontWeight="Bold">Data Anonymization</Span>
+                <Span>rules</Span>
+            </TextBlock>
+
+            <!--<StackPanel Orientation="Horizontal" Height="30" Margin="20,20,0,0">
+                <TextBlock Text="Filter Condition" FontSize="15" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBox x:Name="FilterCondition" Text="" HorizontalContentAlignment="Left" Width="430" Margin="30,0,0,0" />
+
+            </StackPanel>-->
+
+            <!--<Expander Name="ExpanderControl" Header="Rule 1" HorizontalAlignment="Left" Margin="20,20,0,0">
+            <StackPanel Orientation="Horizontal" Height="30" Margin="20,20,0,0">
+                <TextBlock Text="Attribute To Scrub" FontSize="15" VerticalAlignment="Center" Margin="0,0,0,0"/>
+                <TextBox x:Name="ScrubAttribute" Text="" HorizontalContentAlignment="Left" Width="150" Margin="10,0,0,0" />
+                <TextBlock Text="Scrub Type" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                <ComboBox x:Name="ScrubType" Width="120" Margin="20,0,0,0">
+                    <ComboBoxItem Content="Null"></ComboBoxItem>
+                    <ComboBoxItem Content="Constant"></ComboBoxItem>
+                    <ComboBoxItem Content="Random"></ComboBoxItem>
+                    <ComboBoxItem Content="Shuffle"></ComboBoxItem>
+                </ComboBox>
+                <TextBlock Text="Value" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                <TextBox x:Name="ScrubValue" Text="" HorizontalContentAlignment="Right" Width="150" Margin="10,0,0,0" />
+            </StackPanel>
+            </Expander>-->
+
+            <StackPanel Orientation="Horizontal" Height="30" Margin="20,20,0,0">
+                <Button x:Name="Add" Width="100" Click="BtnAddScrubRule" HorizontalAlignment="Left" Margin="0,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Add Rule" VerticalAlignment="Center" Margin="5" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="ValidateRuleButton" Content="Validate" Width="100" Margin="300,0,0,0" Click="ValidateRuleButton_Click"/>
+                <Button x:Name="SaveRuleButton" Content="Save" Width="100" Margin="20,0,0,0" Click="SaveRuleButton_Click"/>
+                <Button x:Name="LoadRuleButton" Content="Load" Width="100" Margin="20,0,0,0" Click="LoadRuleButton_Click"/>
+            </StackPanel>
+            <ScrollViewer Height="200" VerticalScrollBarVisibility="Visible" >
+                <Border BorderThickness="3">
+                    <StackPanel x:Name="RulesStackPanel" Orientation="Horizontal">
+                        <StackPanel x:Name="RulesStackPanelLeft" Width="390"/>
+                        <StackPanel x:Name="RulesStackPanelRight" Width="390"/>
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
+
+        </StackPanel>
+
+
+    </Grid>
+</Page>
