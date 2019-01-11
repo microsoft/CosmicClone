@@ -55,6 +55,8 @@ The utility helps in below
 **Sample rule2**
 
 ![screen6](/docs/images/sRule2.png)
+
+
 Note there are options to validate, save and load these rules
 
 **Migration screen**
@@ -74,9 +76,9 @@ As can be inferred from above, documents will be sanitized based on rules.
 ### Todos
 
  - Adapt to other Cosmos API like Graph and Cassandra apart from SQL API
- - Parellilze read and write to improve efficiency
+ - Parellelize read and write to improve efficiency
  - Add anonymization option to mask with random values (predefined patterns and regular expressions)
- - Refactor some of the UI and utility code
+ - Refactor some of the UI and utility code to improve maintainability
  - Write more tests
 
 ## References
