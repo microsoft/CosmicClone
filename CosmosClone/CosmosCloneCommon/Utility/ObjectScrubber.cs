@@ -99,10 +99,11 @@ namespace CosmosCloneCommon.Utility
             if (token == null || token.Type == JTokenType.Null) return jTokenList;
 
             bool isLeaflevel = false;
-            for (int i = 1; i < propNames.Count; i++)
+
+            if(propNames.Count > 1)
             {
-                if (i == propNames.Count - 1) isLeaflevel = true;
-                var currentProperty = propNames[i];
+                if (propNames.Count == 2) isLeaflevel = true;
+                var currentProperty = propNames[1];
 
                 if (token.Type == JTokenType.Array)
                 {
@@ -123,7 +124,7 @@ namespace CosmosCloneCommon.Utility
                         }
                         else
                         {
-                            getPropertyValues(jArray[k], propNames.GetRange(i, propNames.Count - i), ref jTokenList);
+                            getPropertyValues(jArray[k], propNames.GetRange(1, propNames.Count - 1), ref jTokenList);
                             continue;
                         }
                     }
@@ -133,8 +134,8 @@ namespace CosmosCloneCommon.Utility
                     var jObj = (JObject)token;
                     if (isLeaflevel == true)
                     {
-                        if (jObj[currentProperty] != null )
-                        {                            
+                        if (jObj[currentProperty] != null)
+                        {
                             jTokenList.Add(jObj[currentProperty]);
                         }
                         else
@@ -143,12 +144,12 @@ namespace CosmosCloneCommon.Utility
                         }
                     }
                     else
-                    {                        
-                        getPropertyValues((JToken)jObj[currentProperty], propNames.GetRange(i, propNames.Count - i), ref jTokenList);
+                    {
+                        getPropertyValues((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), ref jTokenList);
                     }
                 }
-                break;
-            }
+
+            } 
             return jTokenList;
         }
         public JToken getDocumentShuffledToken(JToken token, List<string> propNames, ref Queue<JToken> tokenQ)
@@ -157,10 +158,11 @@ namespace CosmosCloneCommon.Utility
 
             JToken jTokenResult = token;//just to initialize
             bool isLeaflevel = false;
-            for (int i = 1; i < propNames.Count; i++)
+            if (propNames.Count > 1)
             {
-                if (i == propNames.Count - 1) isLeaflevel = true;
-                var currentProperty = propNames[i];
+                if (propNames.Count == 2) isLeaflevel = true;
+
+                var currentProperty = propNames[1];
 
                 if (token.Type == JTokenType.Array)
                 {
@@ -177,7 +179,7 @@ namespace CosmosCloneCommon.Utility
                         }
                         else
                         {
-                            jArray[k] = getDocumentShuffledToken(jArray[k], propNames.GetRange(i, propNames.Count - i), ref tokenQ);
+                            jArray[k] = getDocumentShuffledToken(jArray[k], propNames.GetRange(1, propNames.Count - 1), ref tokenQ);
                             continue;
                         }
                     }
@@ -196,13 +198,12 @@ namespace CosmosCloneCommon.Utility
                     }
                     else
                     {
-                        jObj[currentProperty] = getDocumentShuffledToken((JToken)jObj[currentProperty], propNames.GetRange(i, propNames.Count - i), ref tokenQ);
+                        jObj[currentProperty] = getDocumentShuffledToken((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), ref tokenQ);
                     }
                     var str3 = jObj.ToString();
                     jTokenResult = (JToken)jObj;
                 }
-                break;
-            }
+            }               
             if (jTokenResult == null)
             {
                 jTokenResult = token;
@@ -216,10 +217,12 @@ namespace CosmosCloneCommon.Utility
 
             JToken jTokenResult=token;//just to initialize
             bool isLeaflevel = false;
-            for (int i = 1; i < propNames.Count; i++)
+
+            if (propNames.Count > 1)
             {
-                if (i == propNames.Count - 1) isLeaflevel = true;
-                var currentProperty = propNames[i];
+                if (propNames.Count == 2) isLeaflevel = true;
+
+                var currentProperty = propNames[1];
 
                 if (token.Type == JTokenType.Array)
                 {
@@ -238,7 +241,7 @@ namespace CosmosCloneCommon.Utility
                         {
                             if (jArray[k] != null && jArray[k][currentProperty].Type != JTokenType.Null)
                             {
-                                jArray[k] = getUpdatedJsonArrayValue(jArray[k], propNames.GetRange(i, propNames.Count - i), overwritevalue);
+                                jArray[k] = getUpdatedJsonArrayValue(jArray[k], propNames.GetRange(1, propNames.Count - 1), overwritevalue);
                                 continue;
                             }
                             //else return null;
@@ -252,7 +255,7 @@ namespace CosmosCloneCommon.Utility
                     var jObj = (JObject)token;
                     if (isLeaflevel == true)
                     {
-                        if(jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
+                        if (jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
                         {
                             jObj[currentProperty] = overwritevalue;
                         }
@@ -261,15 +264,15 @@ namespace CosmosCloneCommon.Utility
                     {
                         if (jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
                         {
-                            jObj[currentProperty] = getUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(i, propNames.Count - i), overwritevalue);
+                            jObj[currentProperty] = getUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), overwritevalue);
                         }
                         //else return null;
                     }
                     var str3 = jObj.ToString();
                     jTokenResult = (JToken)jObj;
                 }
-                break;
             }
+
             if(jTokenResult == null)
             {
                 jTokenResult = token;

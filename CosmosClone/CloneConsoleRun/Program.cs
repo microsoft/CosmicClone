@@ -29,6 +29,7 @@ namespace CloneConsoleRun
                 //Update the app.config settings in the console project to run the below directly
                 //var documentMigrator = new CosmosCloneCommon.Migrator.DocumentMigrator();
                 //documentMigrator.StartCopy().Wait();
+                TestCosmosScrubbing();
 
                 //logger.LogInfo("Begin Code migration");
                 //var codeMigrator = new CosmosCloneCommon.Migrator.CodeMigrator();
@@ -67,8 +68,8 @@ namespace CloneConsoleRun
             //scrubRules.Add(rule3);
             //scrubRules.Add(rule4);            
             //ScrubRule rule5 = new ScrubRule("c.EntityType=\"External\"", "c.EmailAddress", RuleType.Singlevalue, "unknown@unknown.com", 4);
-            ScrubRule rule6 = new ScrubRule("c.id=\"51b6b28d-1c5f-4385-af4b-8dbb3dc45f65\"", "c.EmailAddress", RuleType.SingleValue, "unknown@unknown.com", 4);
-            //scrubRules.Add(rule6);
+            ScrubRule rule6 = new ScrubRule("c.id=\"2826d281-3a8b-4408-b064-efff26e26119\"", "c.EmailAddress", RuleType.SingleValue, "unknown@unknown.com", 4);
+            scrubRules.Add(rule6);
             var documentMigrator = new CosmosCloneCommon.Migrator.DocumentMigrator();
             documentMigrator.StartCopy(scrubRules).Wait();
             //var result = tcs.StartScrub(scrubRules);
