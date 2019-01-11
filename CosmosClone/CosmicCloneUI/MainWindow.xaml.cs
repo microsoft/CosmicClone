@@ -279,9 +279,12 @@ namespace CosmicCloneUI
                 }
                 else
                 {
-
-                    readPercentProgress = (DocumentMigrator.TotalRecordsRetrieved * 100) / DocumentMigrator.TotalRecordsInSource;
-                    writePercentProgress = (DocumentMigrator.TotalRecordsSent * 100) / DocumentMigrator.TotalRecordsInSource;
+                    if(CloneSettings.CopyDocuments)
+                    {
+                        readPercentProgress = (DocumentMigrator.TotalRecordsRetrieved * 100) / DocumentMigrator.TotalRecordsInSource;
+                        writePercentProgress = (DocumentMigrator.TotalRecordsSent * 100) / DocumentMigrator.TotalRecordsInSource;
+                    }
+                    
                     if(CloneSettings.ScrubbingRequired && DocumentMigrator.scrubRules!=null && DocumentMigrator.scrubRules.Count>0)
                     {
                         scrubPercentProgress = DocumentMigrator.ScrubPercentProgress;
