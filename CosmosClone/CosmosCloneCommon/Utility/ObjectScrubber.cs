@@ -1,0 +1,280 @@
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using CosmosCloneCommon.Model;
+using CosmosCloneCommon.Sample;
+
+namespace CosmosCloneCommon.Utility
+{
+    public class ObjectScrubber
+    {
+        public List<JToken> ScrubObjectList(List<string> srcList, ScrubRule scrubRule)
+        {
+            //var scrubbedObjects = new List<string>();
+            var scrubbedObjects = new List<JToken>();
+            var propNames = scrubRule.PropertyName.Split('.').ToList();
+            if(scrubRule.Type == RuleType.NullValue || scrubRule.Type == RuleType.SingleValue)
+            {
+                foreach (var strObj in srcList)
+                {
+                    try
+                    {
+                        JToken jToken = getUpdatedJsonArrayValue((JToken)JObject.Parse(strObj), propNames, scrubRule.UpdateValue);
+                        scrubbedObjects.Add(jToken);
+                    }
+                    catch(Exception ex)
+                    {
+                        CloneLogger.LogInfo("Log failed");
+                        CloneLogger.LogError(ex);
+                        throw ;
+                    }
+                   
+                }
+            }
+            else if(scrubRule.Type == RuleType.Shuffle)
+            {
+                //get all similar values
+                var propertyValues = new List<JToken>();
+                foreach (var strObj in srcList)
+                {
+                    try
+                    {
+                        List<JToken> jTokenList = new List<JToken>();
+                        getPropertyValues((JToken)JObject.Parse(strObj), propNames, ref jTokenList);
+                        propertyValues.AddRange(jTokenList);
+                    }
+                    catch (Exception ex)
+                    {
+                        CloneLogger.LogInfo("Log failed");
+                        CloneLogger.LogError(ex);
+                        throw ;
+                    }
+                   
+                }
+                
+                var shuffledTokens = RandomNumberGenerator.Shuffle(propertyValues);
+                var shuffledTokenQ = new Queue<JToken>(shuffledTokens);
+
+                foreach (var strObj in srcList)
+                {
+                    try
+                    {
+                        JToken jToken = getDocumentShuffledToken((JToken)JObject.Parse(strObj), propNames, ref shuffledTokenQ);
+                        scrubbedObjects.Add(jToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        CloneLogger.LogInfo("Log failed");
+                        CloneLogger.LogError(ex);
+                        throw ;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var strObj in srcList)
+                {
+                    scrubbedObjects.Add((JToken)strObj);
+                }
+            }
+            
+            return scrubbedObjects;
+        }
+
+       
+
+        public List<JToken> getPropertyValues(JToken token, List<string> propNames, ref List<JToken> jTokenList)
+        {            
+            if(jTokenList == null)
+            {
+                jTokenList = new List<JToken>();
+            }
+            if (token == null || token.Type == JTokenType.Null) return jTokenList;
+
+            bool isLeaflevel = false;
+            for (int i = 1; i < propNames.Count; i++)
+            {
+                if (i == propNames.Count - 1) isLeaflevel = true;
+                var currentProperty = propNames[i];
+
+                if (token.Type == JTokenType.Array)
+                {
+                    var jArray = (JArray)token;
+                    for (int k = 0; k < jArray.Count; k++)
+                    {
+                        if (isLeaflevel == true)
+                        {
+                            if (jArray[k][currentProperty] != null && jArray[k][currentProperty].Type != JTokenType.Null)
+                            {
+                                jTokenList.Add(jArray[k][currentProperty]);
+                            }
+                            else
+                            {
+                                jTokenList.Add(null);//In future, to retain null feature modify this to conditional
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            getPropertyValues(jArray[k], propNames.GetRange(i, propNames.Count - i), ref jTokenList);
+                            continue;
+                        }
+                    }
+                }
+                else
+                {
+                    var jObj = (JObject)token;
+                    if (isLeaflevel == true)
+                    {
+                        if (jObj[currentProperty] != null )
+                        {                            
+                            jTokenList.Add(jObj[currentProperty]);
+                        }
+                        else
+                        {
+                            jTokenList.Add(null);//In future, to retain null feature modify this to conditional
+                        }
+                    }
+                    else
+                    {                        
+                        getPropertyValues((JToken)jObj[currentProperty], propNames.GetRange(i, propNames.Count - i), ref jTokenList);
+                    }
+                }
+                break;
+            }
+            return jTokenList;
+        }
+        public JToken getDocumentShuffledToken(JToken token, List<string> propNames, ref Queue<JToken> tokenQ)
+        {
+            if (token == null || token.Type == JTokenType.Null) return null;
+
+            JToken jTokenResult = token;//just to initialize
+            bool isLeaflevel = false;
+            for (int i = 1; i < propNames.Count; i++)
+            {
+                if (i == propNames.Count - 1) isLeaflevel = true;
+                var currentProperty = propNames[i];
+
+                if (token.Type == JTokenType.Array)
+                {
+                    var jArray = (JArray)token;
+                    for (int k = 0; k < jArray.Count; k++)
+                    {
+                        if (isLeaflevel == true)
+                        {
+                            if (jArray[k][currentProperty] != null && jArray[k][currentProperty].Type != JTokenType.Null)
+                            {
+                                jArray[k][currentProperty] = tokenQ.Dequeue();
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            jArray[k] = getDocumentShuffledToken(jArray[k], propNames.GetRange(i, propNames.Count - i), ref tokenQ);
+                            continue;
+                        }
+                    }
+                    var str2 = jArray.ToString();
+                    jTokenResult = (JToken)jArray;
+                }
+                else
+                {
+                    var jObj = (JObject)token;
+                    if (isLeaflevel == true)
+                    {
+                        if (jObj[currentProperty] != null)
+                        {
+                            jObj[currentProperty] = tokenQ.Dequeue();
+                        }
+                    }
+                    else
+                    {
+                        jObj[currentProperty] = getDocumentShuffledToken((JToken)jObj[currentProperty], propNames.GetRange(i, propNames.Count - i), ref tokenQ);
+                    }
+                    var str3 = jObj.ToString();
+                    jTokenResult = (JToken)jObj;
+                }
+                break;
+            }
+            if (jTokenResult == null)
+            {
+                jTokenResult = token;
+            }
+            return jTokenResult;
+        }
+
+        public JToken getUpdatedJsonArrayValue(JToken token, List<string> propNames, string overwritevalue)
+        {
+            if (token == null || token.Type == JTokenType.Null) return null;
+
+            JToken jTokenResult=token;//just to initialize
+            bool isLeaflevel = false;
+            for (int i = 1; i < propNames.Count; i++)
+            {
+                if (i == propNames.Count - 1) isLeaflevel = true;
+                var currentProperty = propNames[i];
+
+                if (token.Type == JTokenType.Array)
+                {
+                    var jArray = (JArray)token;
+                    for (int k = 0; k < jArray.Count; k++)
+                    {
+                        if (isLeaflevel == true)
+                        {
+                            if (jArray[k][currentProperty] != null && jArray[k][currentProperty].Type != JTokenType.Null)
+                            {
+                                jArray[k][currentProperty] = overwritevalue;
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            if (jArray[k] != null && jArray[k][currentProperty].Type != JTokenType.Null)
+                            {
+                                jArray[k] = getUpdatedJsonArrayValue(jArray[k], propNames.GetRange(i, propNames.Count - i), overwritevalue);
+                                continue;
+                            }
+                            //else return null;
+                        }
+                    }
+                    var str2 = jArray.ToString();
+                    jTokenResult = (JToken)jArray;
+                }
+                else
+                {
+                    var jObj = (JObject)token;
+                    if (isLeaflevel == true)
+                    {
+                        if(jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
+                        {
+                            jObj[currentProperty] = overwritevalue;
+                        }
+                    }
+                    else
+                    {
+                        if (jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
+                        {
+                            jObj[currentProperty] = getUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(i, propNames.Count - i), overwritevalue);
+                        }
+                        //else return null;
+                    }
+                    var str3 = jObj.ToString();
+                    jTokenResult = (JToken)jObj;
+                }
+                break;
+            }
+            if(jTokenResult == null)
+            {
+                jTokenResult = token;
+            }
+            return jTokenResult;
+        }                
+    }
+}
