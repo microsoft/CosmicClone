@@ -26,7 +26,7 @@ namespace CosmosCloneCommon.Sample
         protected int ReadDelaybetweenRequestsInMs = 2000;
         protected int maxtestDocumentCount = 50000;
         protected bool IsFixedCollection = true;
-        protected CosmosDBHelper cosmosHelper;
+        protected CosmosSampleDBHelper cosmosHelper;
         protected CosmosBulkImporter cosmosBulkImporter;
         protected DocumentClient sampleClient;
         protected DocumentCollection sampleCollection;
@@ -34,7 +34,7 @@ namespace CosmosCloneCommon.Sample
 
         public SampleDBCreator()
         {
-            cosmosHelper = new CosmosDBHelper();
+            cosmosHelper = new CosmosSampleDBHelper();
             cosmosBulkImporter = new CosmosBulkImporter();            
         }
 

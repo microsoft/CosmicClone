@@ -75,15 +75,15 @@ namespace CosmicCloneUI
         private void BtnClickPrevious(object sender, RoutedEventArgs e)
         {
             Page currentPage = (Page)_mainFrame.Content;
-            _mainFrame.Navigate(getPreviousPage(currentPage));
+            _mainFrame.Navigate(GetPreviousPage(currentPage));
         }
 
         private void BtnClickNext(object sender, RoutedEventArgs e)
         {
             Page currentPage = (Page)_mainFrame.Content;
-            if(performAction(currentPage))
+            if(PerformAction(currentPage))
             {
-                _mainFrame.Navigate(getNextPage(currentPage));
+                _mainFrame.Navigate(GetNextPage(currentPage));
             }            
         }
 
@@ -95,7 +95,7 @@ namespace CosmicCloneUI
         private void NavigationHelper()
         {
             Page currentPage = (Page)_mainFrame.Content;
-            int pagenum = getPageNumber(currentPage);
+            int pagenum = GetPageNumber(currentPage);
             if (pagenum == 0)
             {
                 btn_previous.IsEnabled = false;
@@ -116,17 +116,17 @@ namespace CosmicCloneUI
             }
         }
 
-        private Page getNextPage(Page currentPage)
+        private Page GetNextPage(Page currentPage)
         {
-            return pages[getPageNumber(currentPage) + 1];
+            return pages[GetPageNumber(currentPage) + 1];
         }
 
-        private Page getPreviousPage(Page currentPage)
+        private Page GetPreviousPage(Page currentPage)
         {
-            return pages[getPageNumber(currentPage) - 1];
+            return pages[GetPageNumber(currentPage) - 1];
         }
 
-        private int getPageNumber(Page page)
+        private int GetPageNumber(Page page)
         {
             for(int i=0;i<pages.Length;i++)
             {
@@ -143,82 +143,60 @@ namespace CosmicCloneUI
             NavigationHelper();
         }
         
-        private bool performAction(Page currentPage)
+        private bool PerformAction(Page currentPage)
         {
-            if (getPageNumber(currentPage) == 0)
+            if (GetPageNumber(currentPage) == 0)
             {
-                CloneSettings.SourceSettings = new CosmosCollectionValues()
-                {
-                    EndpointUrl = ((TextBox)currentPage.FindName("SourceURL")).Text.ToString(),
-                    AccessKey = ((TextBox)currentPage.FindName("SourceKey")).Text.ToString(),
-                    DatabaseName = ((TextBox)currentPage.FindName("SourceDB")).Text.ToString(),
-                    CollectionName = ((TextBox)currentPage.FindName("SourceCollection")).Text.ToString()
-                    //OfferThroughputRUs = int.Parse(sourceConfigs["OfferThroughputRUs"])
-                };
-
-                var result = cosmosHelper.TestSourceConnection_v2();
-                if (result.IsSuccess == true)
-                    return true;
-                else
-                    return false;
-
+                var result = ((SourcePage)currentPage).TestSourceConnection();
+                return result;
             }
-            else if (getPageNumber(currentPage) == 1)
+            else if (GetPageNumber(currentPage) == 1)
             {
-                CloneSettings.TargetSettings = new CosmosCollectionValues()
-                {
-                    EndpointUrl = ((TextBox)currentPage.FindName("TargetURL")).Text,
-                    AccessKey = ((TextBox)currentPage.FindName("TargetKey")).Text,
-                    DatabaseName = ((TextBox)currentPage.FindName("TargetDB")).Text,
-                    CollectionName = ((TextBox)currentPage.FindName("TargetCollection")).Text
-                    //OfferThroughputRUs = int.Parse(sourceConfigs["OfferThroughputRUs"])
-                };
-
-                var result = cosmosHelper.TestTargetConnection_v2();
-                if (result.IsSuccess == true)
-                    return true;
-                else
-                    return false;
-
+                var result = ((DestinationPage)currentPage).TestDestinationConnection();
+                return result;
             }
-            else if (getPageNumber(currentPage) == 2)
+            else if (GetPageNumber(currentPage) == 2)
             {
                 CloneSettings.CopyStoredProcedures = ((CheckBox)currentPage.FindName("SPs")).IsChecked.Value;
                 CloneSettings.CopyUDFs = ((CheckBox)currentPage.FindName("UDFs")).IsChecked.Value;
-                CloneSettings.CopyTriggers = ((CheckBox)currentPage.FindName("Triggers")).IsChecked.Value;
+                CloneSettings.CopyTriggers = ((CheckBox)currentPage.FindName("CosmosTriggers")).IsChecked.Value;
                 CloneSettings.CopyDocuments = ((CheckBox)currentPage.FindName("Documents")).IsChecked.Value;
                 CloneSettings.CopyIndexingPolicy = ((CheckBox)currentPage.FindName("IPs")).IsChecked.Value;
                 CloneSettings.CopyPartitionKey = ((CheckBox)currentPage.FindName("PKs")).IsChecked.Value;
 
                 return true;                
             }
-            else if (getPageNumber(currentPage) == 3)
+            else if (GetPageNumber(currentPage) == 3)
             {
                 btn_finish.IsEnabled = false;
                 scrubRules = ((DataAnonymizationPage)currentPage).getScrubRules();
                 bool isValidationSuccess = ((DataAnonymizationPage)currentPage).validateInput();
                 if (!isValidationSuccess) return false;
-                               
-                BackgroundWorker worker = new BackgroundWorker();
-                worker.WorkerReportsProgress = true;
-                worker.DoWork += worker_DoWork;
-                worker.ProgressChanged += worker_ProgressChanged;
-                worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+
+                BackgroundWorker worker = new BackgroundWorker
+                {
+                    WorkerReportsProgress = true
+                };
+                worker.DoWork += Worker_DoWork;
+                worker.ProgressChanged += Worker_ProgressChanged;
+                worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
                 worker.RunWorkerAsync(1000);
 
-                BackgroundWorker worker2 = new BackgroundWorker();
-                worker2.WorkerReportsProgress = true;
-                worker2.DoWork += worker_DoWork2;
-                worker2.ProgressChanged += worker_ProgressChanged2;
-                worker2.RunWorkerCompleted += worker_RunWorkerCompleted2;
+                BackgroundWorker worker2 = new BackgroundWorker
+                {
+                    WorkerReportsProgress = true
+                };
+                worker2.DoWork += Worker_DoWork2;
+                worker2.ProgressChanged += Worker_ProgressChanged2;
+                worker2.RunWorkerCompleted += Worker_RunWorkerCompleted2;
                 worker2.RunWorkerAsync(1000);
 
-                var nextPage = getNextPage(currentPage);
+                var nextPage = GetNextPage(currentPage);
                 ((CopyCollectionPage)nextPage).setRequiredprogressBars(scrubRules);
 
                 return true;
             }
-            else if (getPageNumber(currentPage) == 4)
+            else if (GetPageNumber(currentPage) == 4)
             {
                 btn_finish.IsEnabled = false;
                 ((CopyCollectionPage)currentPage).setRequiredprogressBars(scrubRules);
@@ -231,7 +209,7 @@ namespace CosmicCloneUI
         }
 
 
-        void worker_DoWork(object sender, DoWorkEventArgs e)
+        void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -252,18 +230,18 @@ namespace CosmicCloneUI
 
         }
 
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //((ProgressBar)pages[3].FindName("ReadProgress")).Value = e.ProgressPercentage;            
         }
 
-        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //MessageBox.Show("Document Collection Copied Successfully : ");
         }
 
 
-        void worker_DoWork2(object sender, DoWorkEventArgs e)
+        void Worker_DoWork2(object sender, DoWorkEventArgs e)
         {
             long readPercentProgress = 0;
             long writePercentProgress = 0;
@@ -298,7 +276,7 @@ namespace CosmicCloneUI
                 Task.Delay(3000).Wait();
             }
         }
-        void worker_ProgressChanged2(object sender, ProgressChangedEventArgs e)
+        void Worker_ProgressChanged2(object sender, ProgressChangedEventArgs e)
         {
             int receivePercent = e.ProgressPercentage;
 
@@ -315,7 +293,7 @@ namespace CosmicCloneUI
             statustextbox.ScrollToEnd();
         }
 
-        void worker_RunWorkerCompleted2(object sender, RunWorkerCompletedEventArgs e)
+        void Worker_RunWorkerCompleted2(object sender, RunWorkerCompletedEventArgs e)
         {
             while(!DocumentMigrator.IsCodeMigrationComplete)
             {

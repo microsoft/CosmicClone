@@ -39,7 +39,9 @@
                         <TextBlock Text="Test Connection" VerticalAlignment="Center" Margin="5" />                        
                     </StackPanel>
                 </Button>
+                
             </StackPanel>
+            <TextBlock Name="ConnectionTestMsg" TextWrapping="Wrap" Text="" Height="35" Margin="100,10,100,5"/>
         </StackPanel>
     </Grid>
 </Page>
