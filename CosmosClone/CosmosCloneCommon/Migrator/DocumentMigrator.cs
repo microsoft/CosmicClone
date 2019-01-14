@@ -87,17 +87,29 @@ namespace CosmosCloneCommon.Migrator
             {
                 await ReadUploadInbatches((IDocumentQuery<dynamic>)SourceCommonDataFetchQuery);
             }
-            IsCodeMigrationComplete = false;
-            if (CloneSettings.CopyStoredProcedures) { await CopyStoredProcedures(); }
-            if (CloneSettings.CopyUDFs) { await CopyUDFs(); }
-            if (CloneSettings.CopyTriggers) { await CopyTriggers(); }
-
-            IsCodeMigrationComplete = true;
+            else
+            {
+                //scrub documents for rules without filters(no where condition)
+                //This is also part of copy documents code hence this is included here when copydocuments is turned off
+                if (CloneSettings.ScrubbingRequired && noFilterScrubRules != null && noFilterScrubRules.Count > 0)
+                {
+                    var dcs = new DataScrubMigrator();
+                    var result = dcs.StartScrub(noFilterScrubRules);
+                }
+            }
+            
             if (CloneSettings.ScrubbingRequired && filteredScrubRules != null && filteredScrubRules.Count > 0)
             {
                 var dcs = new DataScrubMigrator();
                 var result = dcs.StartScrub(filteredScrubRules);
             }
+            
+            IsCodeMigrationComplete = false;
+            if (CloneSettings.CopyStoredProcedures) { await CopyStoredProcedures(); }
+            if (CloneSettings.CopyUDFs) { await CopyUDFs(); }
+            if (CloneSettings.CopyTriggers) { await CopyTriggers(); }
+            IsCodeMigrationComplete = true;
+
             return true;
         }
         public async Task InitializeMigration()
@@ -208,7 +220,7 @@ namespace CosmosCloneCommon.Migrator
                 logger.LogInfo($"Total records retrieved {TotalRecordsRetrieved}. Total records uploaded {TotalRecordsSent}");
                 logger.LogInfo($"Time elapsed : {stopwatch.Elapsed} ");
             }
-            setCompleteOnNoFilterRules();
+            SetCompleteOnNoFilterRules();
             stopwatch.Stop();
             logger.LogInfo("Document Migration completed");
         }
@@ -219,7 +231,7 @@ namespace CosmosCloneCommon.Migrator
             //sourceCollection = await cosmosHelper.GetSourceDocumentCollection(sourceClient);
             var setCorrect = await cosmosHelper.SetTargetRestOfferThroughPut();
         }
-        public bool setCompleteOnNoFilterRules()
+        public bool SetCompleteOnNoFilterRules()
         {
             if (scrubRules != null && scrubRules.Count > 0)
             {

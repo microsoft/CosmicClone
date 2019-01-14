@@ -30,41 +30,7 @@ namespace CosmosCloneCommon.Utility
             this.ConnectionPolicy.RetryOptions.MaxRetryWaitTimeInSeconds = 600;
         }
 
-        public async Task<ValidationResult> TestSourceConnection()
-        {
-            var result = new ValidationResult();
-            DocumentClient sourceDocumentClient;
-            try
-            {
-                sourceDocumentClient = new DocumentClient(new Uri(CloneSettings.SourceSettings.EndpointUrl), CloneSettings.SourceSettings.AccessKey, ConnectionPolicy);
-                
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex);
-                result.IsSuccess = false;
-                result.Message = "Unable to connect to Source. Check your input url and key are accurate. If Firewall security is enabled for your database please add the ip address of the current machine.";
-                return result;
-            }
-            try
-            {
-                var cosmosDBURI = UriFactory.CreateDocumentCollectionUri(CloneSettings.SourceSettings.DatabaseName, CloneSettings.SourceSettings.CollectionName);
-                //var sourceDatabase = await sourceDocumentClient.ReadDatabaseAsync(Database);
-                var sourceCollection = await sourceDocumentClient.ReadDocumentCollectionAsync(cosmosDBURI);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex);
-                result.IsSuccess = false;
-                result.Message = "Incorrect DatabaseName or Collection. Check your input DatabaseName and Collection are accurate.";
-                return result;
-            }
-            result.IsSuccess = true;
-            result.Message = "OK";            
-            return result;
-        }
-
-        public ValidationResult TestSourceConnection_v2()
+        public ValidationResult TestSourceConnection()
         {
             var result = new ValidationResult();
             DocumentClient sourceDocumentClient;
@@ -98,40 +64,7 @@ namespace CosmosCloneCommon.Utility
             return result;
         }
 
-        public async Task<ValidationResult> TestTargetConnection()
-        {
-            var result = new ValidationResult();
-            DocumentClient targetDocumentClient;
-            try
-            {
-                targetDocumentClient = new DocumentClient(new Uri(CloneSettings.TargetSettings.EndpointUrl), CloneSettings.TargetSettings.AccessKey, ConnectionPolicy);
-
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex);
-                result.IsSuccess = false;
-                result.Message = "Unable to connect to Target. Check your input url and key are accurate. If Firewall security is enabled for your database please add the ip address of the current machine.";
-                return result;
-            }
-            try
-            {               
-                var cosmosDBURI = UriFactory.CreateDatabaseUri(CloneSettings.TargetSettings.DatabaseName);
-                var sourceDatabase = await targetDocumentClient.ReadDatabaseAsync(cosmosDBURI);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex);
-                result.IsSuccess = false;
-                result.Message = "Incorrect DatabaseName .Check whether the input DatabaseName is accurate.";
-                return result;
-            }
-            result.IsSuccess = true;
-            result.Message = "OK";
-            return result;
-        }
-
-        public ValidationResult TestTargetConnection_v2()
+        public ValidationResult TestTargetConnection()
         {
             var result = new ValidationResult();
             DocumentClient targetDocumentClient;
@@ -197,24 +130,7 @@ namespace CosmosCloneCommon.Utility
                 throw;
             }
         }
-
-        public DocumentClient GetSampleDocumentDbClient()
-        {
-            try
-            {
-                var SourceCosmosDBSettings = CloneSettings.GetConfigurationSection("SampleCosmosDBSettings");
-                string SourceEndpointUrl = SourceCosmosDBSettings["EndpointUrl"];
-                string SourceAccessKey = SourceCosmosDBSettings["AccessKey"];
-                var sourceDocumentClient = new DocumentClient(new Uri(SourceEndpointUrl), SourceAccessKey, ConnectionPolicy);
-                return sourceDocumentClient;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex);
-                throw;
-            }
-        }
-
+        
         public async Task<DocumentCollection> GetTargetDocumentCollection(DocumentClient targetClient)
         {
             try
@@ -271,43 +187,6 @@ namespace CosmosCloneCommon.Utility
                 var cosmosDBURI = UriFactory.CreateDocumentCollectionUri(sourceDatabaseName, sourceCollectionName);
                 var sourceCollection = (DocumentCollection)await sourceClient.CreateDocumentCollectionIfNotExistsAsync(UriFactory.CreateDatabaseUri(sourceDatabaseName), new DocumentCollection { Id = sourceCollectionName });
                 return sourceCollection;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex);
-                throw;
-            }
-        }
-
-        public async Task<DocumentCollection> CreateSampleDocumentCollection(DocumentClient sampleClient, bool IsFixedCollection = false)
-        {
-            try
-            {
-                var sampleCosmosDBSettings = CloneSettings.GetConfigurationSection("SampleCosmosDBSettings");
-                string sampleDatabaseName = sampleCosmosDBSettings["DatabaseName"]; ;
-                string sampleCollectionName = sampleCosmosDBSettings["CollectionName"];
-                int offerThroughput = 1000;
-                int.TryParse(sampleCosmosDBSettings["OfferThroughputRUs"], out offerThroughput);
-                await sampleClient.CreateDatabaseIfNotExistsAsync(new Database { Id = sampleDatabaseName });
-                DocumentCollection newDocumentCollection;
-                if (!IsFixedCollection)
-                {
-                    var partitionKeyDefinition = new PartitionKeyDefinition();
-                    partitionKeyDefinition.Paths.Add("/CompositeName");
-                    newDocumentCollection = (DocumentCollection)await sampleClient.CreateDocumentCollectionIfNotExistsAsync
-                                            (UriFactory.CreateDatabaseUri(sampleDatabaseName),
-                                            new DocumentCollection { Id = sampleCollectionName, PartitionKey = partitionKeyDefinition },
-                                            new RequestOptions { OfferThroughput = offerThroughput });
-                }
-                else
-                {
-                    //no partition key if it is a fixed collection
-                    newDocumentCollection = (DocumentCollection)await sampleClient.CreateDocumentCollectionIfNotExistsAsync
-                                           (UriFactory.CreateDatabaseUri(sampleDatabaseName),
-                                           new DocumentCollection { Id = sampleCollectionName},
-                                           new RequestOptions { OfferThroughput = offerThroughput });
-                }
-                return newDocumentCollection;
             }
             catch (Exception ex)
             {

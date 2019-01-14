@@ -75,15 +75,6 @@ namespace CloneConsoleRun
             //var result = tcs.StartScrub(scrubRules);
         }    
 
-
-        public static async Task TestCollections()
-        {
-            logger.LogInfo("TestConnections");
-            var dbhelper = new CosmosDBHelper();
-            var vResult = await dbhelper.TestSourceConnection();
-            var vResult2 = await dbhelper.TestTargetConnection();
-        }
-
      
     }
 }

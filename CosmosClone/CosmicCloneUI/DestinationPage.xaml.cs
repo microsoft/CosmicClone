@@ -33,20 +33,12 @@ namespace CosmicCloneUI
 
         private void BtnTestTarget(object sender, RoutedEventArgs e)
         {
-            if (TestConnection())
-            {
-                var connectionIcon = (Image)this.FindName("ConnectionIcon");
-                ConnectionIcon.Source = new BitmapImage(new Uri("/Images/success.png", UriKind.Relative));                
-            }
-            else
-            {
-                var connectionIcon = (Image)this.FindName("ConnectionIcon");
-                ConnectionIcon.Source = new BitmapImage(new Uri("/Images/fail.png", UriKind.Relative));
-            }
+            TestDestinationConnection();
         }
 
-        private bool TestConnection()
+        public bool TestDestinationConnection()
         {
+            ConnectionTestMsg.Text = "";
             CloneSettings.TargetSettings = new CosmosCollectionValues()
             {
                 EndpointUrl = TargetURL.Text.ToString(),
@@ -55,11 +47,20 @@ namespace CosmicCloneUI
                 CollectionName = TargetCollection.Text.ToString()
             };
 
-            var result = cosmosHelper.TestTargetConnection_v2();
-            if (result.IsSuccess == true)
-                return true;
+            var result = cosmosHelper.TestTargetConnection();
+            if (result.IsSuccess)
+            {
+                var connectionIcon = (Image)this.FindName("ConnectionIcon");
+                ConnectionIcon.Source = new BitmapImage(new Uri("/Images/success.png", UriKind.Relative));
+                ConnectionTestMsg.Text = "Validation Passed";
+            }
             else
-                return false;
+            {
+                var connectionIcon = (Image)this.FindName("ConnectionIcon");
+                ConnectionIcon.Source = new BitmapImage(new Uri("/Images/fail.png", UriKind.Relative));
+                ConnectionTestMsg.Text = result.Message;
+            }
+            return result.IsSuccess;
         }
     }
 }
