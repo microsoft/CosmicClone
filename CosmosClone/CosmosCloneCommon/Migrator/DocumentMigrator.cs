@@ -94,16 +94,18 @@ namespace CosmosCloneCommon.Migrator
                 if (CloneSettings.ScrubbingRequired && noFilterScrubRules != null && noFilterScrubRules.Count > 0)
                 {
                     var dcs = new DataScrubMigrator();
-                    var result = dcs.StartScrub(noFilterScrubRules);
+                    var result = await dcs.StartScrub(noFilterScrubRules);
                 }
             }
             
             if (CloneSettings.ScrubbingRequired && filteredScrubRules != null && filteredScrubRules.Count > 0)
             {
                 var dcs = new DataScrubMigrator();
-                var result = dcs.StartScrub(filteredScrubRules);
+                var result = await dcs.StartScrub(filteredScrubRules);
             }
             
+            logger.LogScrubRulesInformation(DocumentMigrator.scrubRules);
+
             IsCodeMigrationComplete = false;
             if (CloneSettings.CopyStoredProcedures) { await CopyStoredProcedures(); }
             if (CloneSettings.CopyUDFs) { await CopyUDFs(); }
@@ -145,6 +147,7 @@ namespace CosmosCloneCommon.Migrator
                 {
                     if(string.IsNullOrEmpty(sRule.FilterCondition))
                     {
+                        sRule.RecordsByFilter = TotalRecordsInSource;
                         noFilterScrubRules.Add(sRule);
                     }
                     else
@@ -193,7 +196,7 @@ namespace CosmosCloneCommon.Migrator
                     }
                     else
                     {
-                        var jEntities = new List<JToken>();
+                        var jEntities = new List<JToken>();                        
                         foreach (var sRule in noFilterScrubRules)
                         {
                             jEntities = objectScrubber.ScrubObjectList(scrubbedEntities, sRule);
@@ -203,6 +206,7 @@ namespace CosmosCloneCommon.Migrator
                                 nentities.Add(JsonConvert.SerializeObject(jobj));
                             }
                             scrubbedEntities = nentities;
+                            sRule.RecordsUpdated += jEntities.Count;
                         }
                         var objDocuments = jEntities.Cast<Object>().ToList();
                         uploadResponse = await cosmosBulkImporter.BulkSendToNewCollection<dynamic>(objDocuments);

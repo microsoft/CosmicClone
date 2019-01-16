@@ -19,9 +19,9 @@ namespace CosmosCloneCommon.Model
 
         public RuleType? Type { get; set; }
 
-        private int RecordsByFilter { get; set; }
-        private int RecordsUpdated { get; set; }
-        private int CountNullAttributes { get; set; }
+        public long RecordsByFilter { get; set; }
+        public long RecordsUpdated { get; set; }
+        private long CountNullAttributes { get; set; }
         public bool IsComplete { get; set; }
 
         public ScrubRule() { }
@@ -35,8 +35,9 @@ namespace CosmosCloneCommon.Model
             this.RuleId = ruleId;
             this.IsComplete = false;
         }
+        
     }
-    public enum RuleType { SingleValue, NullValue, Shuffle };//Can add random later if required.
+    public enum RuleType { SingleValue, NullValue, Shuffle };//Can add random rule type later if required.
        
 
 }

@@ -18,6 +18,7 @@ namespace CosmosCloneCommon.Utility
     public class CosmosBulkImporter
     {
         private IBulkExecutor bulkExecutor;
+
         private static readonly ConnectionPolicy ConnectionPolicy = new ConnectionPolicy
         {
             ConnectionMode = ConnectionMode.Direct,

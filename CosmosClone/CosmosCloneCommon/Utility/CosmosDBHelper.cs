@@ -118,10 +118,19 @@ namespace CosmosCloneCommon.Utility
         {
             try
             {
+                var newConnectionPolicy = new ConnectionPolicy
+                {
+                    ConnectionMode = ConnectionMode.Direct,
+                    ConnectionProtocol = Protocol.Tcp,
+                    RetryOptions = new RetryOptions()
+                };
+                newConnectionPolicy.RetryOptions.MaxRetryAttemptsOnThrottledRequests = 20;
+                newConnectionPolicy.RetryOptions.MaxRetryWaitTimeInSeconds = 600;
+
                 string targetEndpointUrl = CloneSettings.TargetSettings.EndpointUrl;
                 string targetAccessKey = CloneSettings.TargetSettings.AccessKey;
                 OfferThroughput = CloneSettings.TargetMigrationOfferThroughputRUs;
-                var targetDocumentClient = new DocumentClient(new Uri(targetEndpointUrl), targetAccessKey, ConnectionPolicy);
+                var targetDocumentClient = new DocumentClient(new Uri(targetEndpointUrl), targetAccessKey, newConnectionPolicy);
                 return targetDocumentClient;
             }
             catch (Exception ex)
@@ -130,7 +139,33 @@ namespace CosmosCloneCommon.Utility
                 throw;
             }
         }
-        
+
+        public DocumentClient GetTargetDocumentDbClient(ConnectionPolicy connectionPolicy)
+        {
+            try
+            {
+                var newConnectionPolicy = new ConnectionPolicy
+                {
+                    ConnectionMode = ConnectionMode.Direct,
+                    ConnectionProtocol = Protocol.Tcp,
+                    RetryOptions = new RetryOptions()
+                };
+                newConnectionPolicy.RetryOptions.MaxRetryAttemptsOnThrottledRequests = 20;
+                newConnectionPolicy.RetryOptions.MaxRetryWaitTimeInSeconds = 600;
+
+                string targetEndpointUrl = CloneSettings.TargetSettings.EndpointUrl;
+                string targetAccessKey = CloneSettings.TargetSettings.AccessKey;
+                OfferThroughput = CloneSettings.TargetMigrationOfferThroughputRUs;
+                var targetDocumentClient = new DocumentClient(new Uri(targetEndpointUrl), targetAccessKey, newConnectionPolicy);
+                return targetDocumentClient;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex);
+                throw;
+            }
+        }
+
         public async Task<DocumentCollection> GetTargetDocumentCollection(DocumentClient targetClient)
         {
             try
@@ -307,6 +342,53 @@ namespace CosmosCloneCommon.Utility
             }
                 return true;
         }
+        public bool CheckSourceReadability()
+        {
+            string sourceDatabaseName = CloneSettings.SourceSettings.DatabaseName;
+            string sourceCollectionName = CloneSettings.SourceSettings.CollectionName;
+            string topOneRecordQuery = "SELECT TOP 1 * FROM c";
+            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
+            //long sourceTotalRecordCount, targetTotalRecordCount;
+            try { 
+                using (var cosmosClient = GetSourceDocumentDbClient())
+                {
+                    var document = cosmosClient.CreateDocumentQuery<dynamic>(
+                                        UriFactory.CreateDocumentCollectionUri(sourceDatabaseName, sourceCollectionName), topOneRecordQuery, queryOptions)
+                                        .AsEnumerable().First();
+                    if (document != null)
+                        return true;
+                }
+            }
+            catch(Exception ex)
+            {
+                logger.LogInfo("Exception during CheckSource Readability");
+                logger.LogError(ex);
+            }
+            return false;
+        }
+        
+        public long GetFilterRecordCount(string filterCondition)
+        {
+            //var TargetCosmosDBSettings = CloneSettings.GetConfigurationSection("SourceCosmosDBSettings");
+            string targetDatabaseName = CloneSettings.TargetSettings.DatabaseName;
+            string targetCollectionName = CloneSettings.TargetSettings.CollectionName;            
+
+            string totalCountQuery = "SELECT VALUE COUNT(1) FROM c";
+            if(!string.IsNullOrEmpty(filterCondition))
+            {
+                totalCountQuery = "SELECT VALUE COUNT(1) FROM c WHERE "+ filterCondition;
+            }
+            FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
+            long totalRecordCount;
+            using (var cosmosClient = GetTargetDocumentDbClient())
+            {
+                totalRecordCount = cosmosClient.CreateDocumentQuery<long>(
+                                    UriFactory.CreateDocumentCollectionUri(targetDatabaseName, targetCollectionName), totalCountQuery, queryOptions)
+                                    .AsEnumerable().First();
+            }
+            return totalRecordCount;
+        }
+
         public bool CompareRecordCount()
         {
             //var SourceCosmosDBSettings = CloneSettings.GetConfigurationSection("SourceCosmosDBSettings");
@@ -317,7 +399,7 @@ namespace CosmosCloneCommon.Utility
             string targetDatabaseName = CloneSettings.TargetSettings.DatabaseName;
             string targetCollectionName = CloneSettings.TargetSettings.CollectionName;
 
-            string totalCountQuery = "SELECT VALUE COUNT(1) FROM p";
+            string totalCountQuery = "SELECT VALUE COUNT(1) FROM c";
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
             long sourceTotalRecordCount, targetTotalRecordCount;
             using (var cosmosClient = GetSourceDocumentDbClient())
