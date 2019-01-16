@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using CosmosCloneCommon.Model;
 
 namespace CosmosCloneCommon.Utility
 {
@@ -46,6 +47,23 @@ namespace CosmosCloneCommon.Utility
             LogInfo("LogError");
             Exception baseException = e.GetBaseException();
             LogInfo($"Error: {e.Message}, Message: {baseException.Message}");
+        }
+
+        public static void LogScrubRulesInformation(List<ScrubRule> scrubRules)
+        {
+            if (scrubRules!=null && scrubRules.Count>0 && CloneSettings.ScrubbingRequired)
+            { 
+                long totalRecords=0;
+                foreach (var rule in scrubRules)
+                {
+                    LogInfo($"Rule Id: {rule.RuleId}. Attribute: {rule.PropertyName}");
+                    LogInfo($"Rule filter:{(string.IsNullOrEmpty(rule.FilterCondition) ? "None":rule.FilterCondition)}");
+                    LogInfo($"Rule Type: {rule.Type.ToString()}");
+                    LogInfo($"Records by filter: {rule.RecordsByFilter}. Records updated: {rule.RecordsUpdated}");
+                    totalRecords += rule.RecordsUpdated;
+                }
+                LogInfo($"Total records scrubbed: {totalRecords}");
+            }
         }
     }
 }

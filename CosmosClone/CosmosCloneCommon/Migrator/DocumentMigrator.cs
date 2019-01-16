@@ -47,6 +47,7 @@ namespace CosmosCloneCommon.Migrator
         public static long TotalRecordsSent { get; set; }
         public static long TotalRecordsInSource { get; set; }
         public static bool IsCodeMigrationComplete { get; set; }
+        protected static bool IsInitialized { get; set; }
 
         public static int ScrubPercentProgress
         {
@@ -55,18 +56,19 @@ namespace CosmosCloneCommon.Migrator
                 if (scrubRules != null && scrubRules.Count > 0)
                 {
                     int totalRules = scrubRules.Count();
-                    int noFilterRuleCompleteCount = scrubRules.Where(x => x.IsComplete == true && string.IsNullOrEmpty(x.FilterCondition) ).ToList().Count();
+                    int noFilterRuleCompleteCount = scrubRules.Where(x => x.IsComplete == true && string.IsNullOrEmpty(x.FilterCondition)).ToList().Count();
                     int filterRuleCompleteCount = 0;
-                    if(DataScrubMigrator.scrubRules!=null && DataScrubMigrator.scrubRules.Count>0)
+                    if (DataScrubMigrator.scrubRules != null && DataScrubMigrator.scrubRules.Count > 0)
                     {
                         filterRuleCompleteCount = DataScrubMigrator.scrubRules.Where(x => x.IsComplete == true).ToList().Count();
                     }
-                    
+
                     var completedRules = scrubRules.Where(x => x.IsComplete == true).ToList().Count();
                     int percent = (int)((noFilterRuleCompleteCount + filterRuleCompleteCount) * 100 / scrubRules.Count());
                     return percent;
                 }
-                else return 100;                
+                else if (IsInitialized) return 100;
+                else return 0;
             }            
         }
 
@@ -80,6 +82,7 @@ namespace CosmosCloneCommon.Migrator
         }
         public async Task<bool> StartCopy(List<ScrubRule> scrubRules = null)
         {
+            IsCodeMigrationComplete = false;
             DocumentMigrator.scrubRules = scrubRules;
 
             await InitializeMigration();
@@ -94,17 +97,18 @@ namespace CosmosCloneCommon.Migrator
                 if (CloneSettings.ScrubbingRequired && noFilterScrubRules != null && noFilterScrubRules.Count > 0)
                 {
                     var dcs = new DataScrubMigrator();
-                    var result = dcs.StartScrub(noFilterScrubRules);
+                    var result = await dcs.StartScrub(noFilterScrubRules);
                 }
             }
             
             if (CloneSettings.ScrubbingRequired && filteredScrubRules != null && filteredScrubRules.Count > 0)
             {
                 var dcs = new DataScrubMigrator();
-                var result = dcs.StartScrub(filteredScrubRules);
+                var result = await dcs.StartScrub(filteredScrubRules);
             }
             
-            IsCodeMigrationComplete = false;
+            logger.LogScrubRulesInformation(DocumentMigrator.scrubRules);
+
             if (CloneSettings.CopyStoredProcedures) { await CopyStoredProcedures(); }
             if (CloneSettings.CopyUDFs) { await CopyUDFs(); }
             if (CloneSettings.CopyTriggers) { await CopyTriggers(); }
@@ -118,6 +122,7 @@ namespace CosmosCloneCommon.Migrator
             logger.LogInfo($"Source Database: {CloneSettings.SourceSettings.DatabaseName} Source Collection: {CloneSettings.SourceSettings.CollectionName}");
             logger.LogInfo($"Target Database: {CloneSettings.TargetSettings.DatabaseName} Target Collection: {CloneSettings.TargetSettings.CollectionName}");
 
+            IsInitialized = true;
             sourceClient = cosmosHelper.GetSourceDocumentDbClient();
             sourceCollection = await cosmosHelper.GetSourceDocumentCollection(sourceClient);
 
@@ -145,6 +150,7 @@ namespace CosmosCloneCommon.Migrator
                 {
                     if(string.IsNullOrEmpty(sRule.FilterCondition))
                     {
+                        sRule.RecordsByFilter = TotalRecordsInSource;
                         noFilterScrubRules.Add(sRule);
                     }
                     else
@@ -193,7 +199,7 @@ namespace CosmosCloneCommon.Migrator
                     }
                     else
                     {
-                        var jEntities = new List<JToken>();
+                        var jEntities = new List<JToken>();                        
                         foreach (var sRule in noFilterScrubRules)
                         {
                             jEntities = objectScrubber.ScrubObjectList(scrubbedEntities, sRule);
@@ -203,6 +209,7 @@ namespace CosmosCloneCommon.Migrator
                                 nentities.Add(JsonConvert.SerializeObject(jobj));
                             }
                             scrubbedEntities = nentities;
+                            sRule.RecordsUpdated += jEntities.Count;
                         }
                         var objDocuments = jEntities.Cast<Object>().ToList();
                         uploadResponse = await cosmosBulkImporter.BulkSendToNewCollection<dynamic>(objDocuments);

@@ -61,6 +61,7 @@ namespace CosmosCloneCommon.Migrator
                 logger.LogInfo($"Initialize process for scrub rule on filter {filterCondition}");
                 var sRules = scrubRules.Where(o => o.FilterCondition.Equals(filterCondition)).ToList();
                 logger.LogInfo($"Scrub rules found {sRules.Count}");
+                long filterRecordCount = cosmosHelper.GetFilterRecordCount(filterCondition);
                 ScrubDataFetchQuery = cosmosHelper.GetScrubDataDocumentQuery<string>(targetClient, filterCondition, CloneSettings.ReadBatchSize);
                 await ReadUploadInbatches((IDocumentQuery<string>)ScrubDataFetchQuery, sRules);
 
@@ -69,6 +70,7 @@ namespace CosmosCloneCommon.Migrator
                     if(srule.FilterCondition.Equals(filterCondition))
                     {
                         srule.IsComplete = true;
+                        srule.RecordsByFilter = filterRecordCount;
                     }
                 }
             }
@@ -115,6 +117,7 @@ namespace CosmosCloneCommon.Migrator
                             nentities.Add(JsonConvert.SerializeObject(jobj));
                         }
                         scrubbedEntities = nentities;
+                        scrubRule.RecordsUpdated += jEntities.Count;
                     }                       
                     var objEntities = jEntities.Cast<Object>().ToList();
                     try
@@ -125,8 +128,7 @@ namespace CosmosCloneCommon.Migrator
                     {
                         logger.LogError(ex);
                         throw (ex);                        
-                    }
-                                    
+                    }                                    
                 }
                 badEntities = uploadResponse.BadInputDocuments;
                 TotalRecordsScrubbed += uploadResponse.NumberOfDocumentsImported;

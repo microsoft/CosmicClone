@@ -243,6 +243,7 @@ namespace CosmicCloneUI
 
         void Worker_DoWork2(object sender, DoWorkEventArgs e)
         {
+            Task.Delay(3000).Wait();
             long readPercentProgress = 0;
             long writePercentProgress = 0;
             long scrubPercentProgress = 0;
@@ -262,12 +263,22 @@ namespace CosmicCloneUI
                         readPercentProgress = (DocumentMigrator.TotalRecordsRetrieved * 100) / DocumentMigrator.TotalRecordsInSource;
                         writePercentProgress = (DocumentMigrator.TotalRecordsSent * 100) / DocumentMigrator.TotalRecordsInSource;
                     }
-                    
-                    if(CloneSettings.ScrubbingRequired && DocumentMigrator.scrubRules!=null && DocumentMigrator.scrubRules.Count>0)
+                    else
+                    {
+                        readPercentProgress = 100;
+                        writePercentProgress = 100;
+                    }
+
+                    if (CloneSettings.ScrubbingRequired && DocumentMigrator.scrubRules != null && DocumentMigrator.scrubRules.Count > 0)
                     {
                         scrubPercentProgress = DocumentMigrator.ScrubPercentProgress;
+                      
+                    }                    
+                    else
+                    {
+                        if (DocumentMigrator.scrubRules == null || DocumentMigrator.scrubRules.Count == 0) scrubPercentProgress = 100;
+                        else scrubPercentProgress = 0;
                     }
-                    else scrubPercentProgress = 100;
 
                 }
 
@@ -280,14 +291,15 @@ namespace CosmicCloneUI
         {
             int receivePercent = e.ProgressPercentage;
 
-            
+
             int writePercent = (receivePercent % 1000);
             int readPercent = (receivePercent % 1000000) / 1000;
-            int scrubPercent = receivePercent/1000000;
+            int scrubPercent = receivePercent / 1000000;
 
             ((ProgressBar)pages[4].FindName("ReadProgress")).Value = readPercent;
             ((ProgressBar)pages[4].FindName("WriteProgress")).Value = writePercent;
             ((ProgressBar)pages[4].FindName("ScrubProgress")).Value = scrubPercent;
+
             var statustextbox = ((TextBox)pages[4].FindName("StatusTextBlock"));
             statustextbox.Text = logger.FullLog;
             statustextbox.ScrollToEnd();
