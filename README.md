@@ -1,8 +1,8 @@
 # Cosmic Clone
 1. [Overview](#overview)
 1. [Deployment Steps](#deployment-steps)
-1. [Create backup copy of a collection](#Create backup copy of a collection)
-1. [Anonymize data of a cosmos collection](#Anonymize data of a cosmos collection)
+1. [Create backup copy of a collection](#Create-backup-copy-of-a-collection)
+1. [Anonymize data of a cosmos collection](#Anonymize-data-of-a-cosmos-collection)
 1. [Todos](#todos)
 1. [References](#references)
 1. [Contributing](#contributing)
