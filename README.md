@@ -1,5 +1,3 @@
-   ![screen91](/docs/images/prodcloneLogo.png)
-
 # Cosmic Clone
 1. [Overview](#overview)
 1. [Deployment Steps](#deployment-steps)
@@ -11,6 +9,10 @@
 
 
 ## Overview
+
+   ![screen91](/docs/images/prodcloneLogo.png)
+
+
 Cosmic Clone is a tool to clone\backup\restore and anonymize data in an azure Cosmos Collection.
 As more applications begin to use Cosmos database, self serve capabilities such as backup, restore collection have become more essential.
 Cosmos Clone is an attempt to create a simple utility that allows to clone a Cosmos Collection.
