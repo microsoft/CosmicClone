@@ -7,6 +7,7 @@
 1. [References](#references)
 1. [Contributing](#contributing)
 
+     ![screen91](/docs/images/prodcloneLogo.png)
 
 ## Overview
 Cosmic Clone is a tool to clone\backup\restore and anonymize data in an azure Cosmos Collection.
@@ -18,7 +19,6 @@ The utility helps in below
 *	Create collections with similar settings(indexes, partition, TTL etc)
 *	Anonymize data through scrubbing or shuffling of sensitive data in documents.
 
-![screen91](/docs/images/prodcloneLogo.png)
 
 ## Deployment Steps
 1. Just Compile and Run the Code.
@@ -62,7 +62,7 @@ In the next page we move onto the Anonymization process. We will leave the anony
 
 ![screen7](/docs/images/sprogress1.png)
 
-![screen8](/docs/images/scomplete.png)
+![screen8](/docs/images/sCompleteAndNotification.png)
 
 Explore the cosmos portal and one can observe the new collection created with the required settings.
 
@@ -108,7 +108,7 @@ Note there are options on the anonymization screen to validate, save and load th
 
 **Completion notification**
 
-![screen8](/docs/images/scomplete.png)
+![screen8](/docs/images/sCompleteAndNotification.png)
 
 
 **Before and After anonymization**
