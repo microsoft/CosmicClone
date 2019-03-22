@@ -24,14 +24,14 @@ namespace CloneConsoleRun.Sample
         public static EntityV2 getRandomEntity()
         {
             var entity = new EntityV2();
-            entity.SuperId = RandomNumberGenerator.getNext();
+            entity.SuperId = RandomNumberGenerator.GetNext();
             entity.id = Guid.NewGuid().ToString();
             entity.FullName = "Test Sample Name " + entity.SuperId.ToString();
             entity.Description = "Test Sample Description " + entity.SuperId.ToString();
             entity.EntityType = RandomNumberGenerator.GetRandomEntityType();
-            var employeeid = RandomNumberGenerator.getNext();
+            var employeeid = RandomNumberGenerator.GetNext();
             entity.EmailAddress = "intialTest"+ employeeid .ToString()+ "@test.com";
-            entity.PhoneNumber = RandomNumberGenerator.getNext().ToString();
+            entity.PhoneNumber = RandomNumberGenerator.GetNext().ToString();
             entity.IsActive = true;
             entity.ModifiedTime = DateTime.UtcNow;
 

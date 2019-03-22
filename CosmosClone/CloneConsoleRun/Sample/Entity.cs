@@ -21,7 +21,7 @@ namespace CloneConsoleRun.Sample
         public static Entity getRandomEntity()
         {
             var entity = new Entity();
-            entity.Id = RandomNumberGenerator.getNext();
+            entity.Id = RandomNumberGenerator.GetNext();
             entity.Name = "Test Sample Name " + entity.Id.ToString();
             entity.Description = "Test Sample Description " + entity.Id.ToString();
             entity.IsActive = true;
@@ -54,10 +54,10 @@ namespace CloneConsoleRun.Sample
         {
             var compositeEntity = new CompositeEntity();
             compositeEntity.id = Guid.NewGuid().ToString();
-            compositeEntity.EmployeeId = RandomNumberGenerator.getNext().ToString();
+            compositeEntity.EmployeeId = RandomNumberGenerator.GetNext().ToString();
             compositeEntity.EntityType = RandomNumberGenerator.GetRandomEntityType();
-            compositeEntity.CompositeName = "Test Sample CompositeName " + RandomNumberGenerator.getNext();
-            compositeEntity.EmailAddress = "test" + RandomNumberGenerator.getNext() + "@microsoft.com";
+            compositeEntity.CompositeName = "Test Sample CompositeName " + RandomNumberGenerator.GetNext();
+            compositeEntity.EmailAddress = "test" + RandomNumberGenerator.GetNext() + "@microsoft.com";
             compositeEntity.EntityValue = Entity.getRandomEntity();
 
             compositeEntity.SuperKeys = new List<EntityKey>();
@@ -78,7 +78,7 @@ namespace CloneConsoleRun.Sample
         public static EntityKey getRandomEntityKey()
         {
             var entityKey = new EntityKey();
-            entityKey.KeyId = RandomNumberGenerator.getNext().ToString();
+            entityKey.KeyId = RandomNumberGenerator.GetNext().ToString();
             entityKey.KeyName = "TestKeyName-" + entityKey.KeyId.ToString();
             entityKey.KeyValue = "TestKeyValue-" + entityKey.KeyId.ToString();
             return entityKey;
