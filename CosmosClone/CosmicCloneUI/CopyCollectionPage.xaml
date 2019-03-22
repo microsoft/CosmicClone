@@ -7,34 +7,34 @@
       mc:Ignorable="d" 
       d:DesignHeight="320" d:DesignWidth="800"
       Title="CopyCollectionPage">
-
     <Grid>
-        <StackPanel Margin="15,10,5,5">
-            <StackPanel x:Name="CollectionReadStackPanel" Margin="0,5,0,0">
-                <TextBlock Text="Reading Collection"/>
-                <ProgressBar x:Name="ReadProgress" Height="15" Margin="0,2,10,5" Value="0"/>
-            </StackPanel>
-            <StackPanel x:Name="CollectionWriteStackPanel" Margin="0,5,0,0">
-                <TextBlock Text="Writing Collection"/>
-                <ProgressBar x:Name="WriteProgress" Height="15" Margin="0,2,10,5" Value="0"/>
-            </StackPanel>
-            <StackPanel x:Name="ScrubStackPanel" Margin="0,5,0,0">
-                <TextBlock Text="Anonymization progress"/>
-                <ProgressBar x:Name="ScrubProgress" Height="15" Margin="0,2,10,5" Value="0"/>
-            </StackPanel>
-            <StackPanel Margin="0,10,0,0">
-                <Button x:Name="ShowStatusButton" Content="Hide status" Margin="0,0,701,0" RenderTransformOrigin="15.969,-5.085" FontSize="9" Click="ShowStatusButton_Click"/>
-                <Border x:Name="StatusTextBlockBorder" BorderThickness="1"  Margin="0,5,10,2">
-                    <!--<ScrollViewer x:Name="StatusTextblockScrollViewer" HorizontalScrollBarVisibility="Auto" >-->
-                        <!--<TextBlock x:Name="StatusTextBlock" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" Height="90" RenderTransformOrigin="0.498,1.559" Opacity="0.9 " FontSize="10"><Run Text="Copy Status Log"/></TextBlock>-->
-                    <!--</ScrollViewer>-->
-                    <TextBox x:Name="StatusTextBlock" Height="100" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Focusable="True" IsReadOnly="True">
-                        
-                    </TextBox>
-
-                </Border>
-            </StackPanel>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45px"/>
+            <RowDefinition Height="10px"/>
+            <RowDefinition Height="45px"/>
+            <RowDefinition Height="10px"/>
+            <RowDefinition Height="45px"/>
+            <RowDefinition Height="20px"/>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="10px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel x:Name="CollectionReadStackPanel" Grid.Row="0">
+            <TextBlock Text="Reading Collection" Style="{StaticResource TextBlockStyle}"/>
+            <ProgressBar x:Name="ReadProgress" Style="{StaticResource ProgressBarStyle}" />
         </StackPanel>
+        <StackPanel x:Name="CollectionWriteStackPanel" Grid.Row="2">
+            <TextBlock Text="Writing Collection" Style="{StaticResource TextBlockStyle}"/>
+            <ProgressBar x:Name="WriteProgress" Style="{StaticResource ProgressBarStyle}"/>
+        </StackPanel>
+        <StackPanel x:Name="ScrubStackPanel" Grid.Row="4">
+            <TextBlock Text="Anonymization progress" Style="{StaticResource TextBlockStyle}"/>
+            <ProgressBar x:Name="ScrubProgress" Style="{StaticResource ProgressBarStyle}"/>
+        </StackPanel>
+        <Button Grid.Row="6" x:Name="ShowStatusButton" Content="Hide status" Click="ShowStatusButton_Click" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="0"/>
+
+        <Border Grid.Row="8" x:Name="StatusTextBlockBorder" BorderThickness="1">
+            <TextBox x:Name="StatusTextBlock" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Focusable="True" IsReadOnly="True"/>
+        </Border>
     </Grid>
 </Page>

@@ -9,56 +9,31 @@
       Title="DataAnonymizationPage">
 
     <Grid>
-        <StackPanel>            
-            <TextBlock FontSize="15" HorizontalAlignment="Left" Margin="20,0,0,0">                 
-                <Span>Enter</Span> 
-                <Span  FontWeight="Bold">Data Anonymization</Span>
-                <Span>rules</Span>
-            </TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="5px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!--<StackPanel Orientation="Horizontal" Height="30" Margin="20,20,0,0">
-                <TextBlock Text="Filter Condition" FontSize="15" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBox x:Name="FilterCondition" Text="" HorizontalContentAlignment="Left" Width="430" Margin="30,0,0,0" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        
 
-            </StackPanel>-->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Style="{StaticResource TextBlockStyle}">                 
+            Enter <Bold>Data Anonymization</Bold> rules
+        </TextBlock>
 
-            <!--<Expander Name="ExpanderControl" Header="Rule 1" HorizontalAlignment="Left" Margin="20,20,0,0">
-            <StackPanel Orientation="Horizontal" Height="30" Margin="20,20,0,0">
-                <TextBlock Text="Attribute To Scrub" FontSize="15" VerticalAlignment="Center" Margin="0,0,0,0"/>
-                <TextBox x:Name="ScrubAttribute" Text="" HorizontalContentAlignment="Left" Width="150" Margin="10,0,0,0" />
-                <TextBlock Text="Scrub Type" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                <ComboBox x:Name="ScrubType" Width="120" Margin="20,0,0,0">
-                    <ComboBoxItem Content="Null"></ComboBoxItem>
-                    <ComboBoxItem Content="Constant"></ComboBoxItem>
-                    <ComboBoxItem Content="Random"></ComboBoxItem>
-                    <ComboBoxItem Content="Shuffle"></ComboBoxItem>
-                </ComboBox>
-                <TextBlock Text="Value" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                <TextBox x:Name="ScrubValue" Text="" HorizontalContentAlignment="Right" Width="150" Margin="10,0,0,0" />
-            </StackPanel>
-            </Expander>-->
-
-            <StackPanel Orientation="Horizontal" Height="30" Margin="20,20,0,0">
-                <Button x:Name="Add" Width="100" Click="BtnAddScrubRule" HorizontalAlignment="Left" Margin="0,0,0,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Add Rule" VerticalAlignment="Center" Margin="5" />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="ValidateRuleButton" Content="Validate" Width="100" Margin="300,0,0,0" Click="ValidateRuleButton_Click"/>
-                <Button x:Name="SaveRuleButton" Content="Save" Width="100" Margin="20,0,0,0" Click="SaveRuleButton_Click"/>
-                <Button x:Name="LoadRuleButton" Content="Load" Width="100" Margin="20,0,0,0" Click="LoadRuleButton_Click"/>
-            </StackPanel>
-            <ScrollViewer Height="200" VerticalScrollBarVisibility="Visible" >
-                <Border BorderThickness="3">
-                    <StackPanel x:Name="RulesStackPanel" Orientation="Horizontal">
-                        <StackPanel x:Name="RulesStackPanelLeft" Width="390"/>
-                        <StackPanel x:Name="RulesStackPanelRight" Width="390"/>
-                    </StackPanel>
-                </Border>
-            </ScrollViewer>
-
+        <Button Grid.Row="1" Grid.Column="0" x:Name="Add" Content="Add Rule" Click="BtnAddScrubRule" Margin="0" HorizontalAlignment="Left" Style="{StaticResource ButtonStyle}" />
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="ValidateRuleButton" Content="Validate"  Click="ValidateRuleButton_Click" Style="{StaticResource ButtonStyle}" />
+            <Button x:Name="SaveRuleButton" Content="Save" Click="SaveRuleButton_Click" Style="{StaticResource ButtonStyle}"/>
+            <Button x:Name="LoadRuleButton" Content="Load" Click="LoadRuleButton_Click" Style="{StaticResource ButtonStyle}" />
         </StackPanel>
-
-
+        <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible" >
+                <WrapPanel x:Name="WrapPanel"/>
+        </ScrollViewer>
     </Grid>
 </Page>

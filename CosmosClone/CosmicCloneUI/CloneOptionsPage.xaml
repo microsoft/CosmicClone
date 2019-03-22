@@ -7,45 +7,17 @@
       mc:Ignorable="d" 
       d:DesignHeight="320" d:DesignWidth="800"
       Title="CloneOptionsPage">
-
-    <Grid>
-        <StackPanel>
-            <Label Content="Select Options for Copying Collection" FontSize="15" />
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <CheckBox x:Name="Documents" VerticalAlignment="Center" IsChecked="True"/>
-                <TextBlock Text="Documents" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <CheckBox x:Name="SPs" VerticalAlignment="Center" IsChecked="True"/>
-                <TextBlock Text="Stored Procedures" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <CheckBox x:Name="UDFs" VerticalAlignment="Center" IsChecked="True"/>
-                <TextBlock Text="User Defined Functions" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <CheckBox x:Name="CosmosTriggers" VerticalAlignment="Center" IsChecked="True"/>
-                <TextBlock Text="Triggers" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <CheckBox x:Name="IPs" VerticalAlignment="Center" IsChecked="True"/>
-                <TextBlock Text="Indexing Policies" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </StackPanel>
-
-
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <CheckBox x:Name="PKs" VerticalAlignment="Center" IsChecked="True"/>
-                <TextBlock Text="Partition Keys" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            </StackPanel>
-
-
-            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
-                <TextBlock Text="Offer Throughput" FontSize="15" VerticalAlignment="Center" Margin="10,0,0,0"/>
-                <TextBox x:Name="OfferThroughput" Text="10000" HorizontalContentAlignment="Right" Width="80" Margin="10,0,0,0" />
-            </StackPanel>
+    <StackPanel>
+        <TextBlock Style="{StaticResource TextBlockStyle}">Select Options for Copying Collection</TextBlock>
+        <CheckBox x:Name="Documents" Content="Documents" Style="{StaticResource CheckBoxStyle}"/>
+        <CheckBox x:Name="SPs" Content="Stored Procedures" Style="{StaticResource CheckBoxStyle}"/>
+        <CheckBox x:Name="UDFs" Content="User Defined Functions" Style="{StaticResource CheckBoxStyle}"/>
+        <CheckBox x:Name="CosmosTriggers" Content="Triggers" Style="{StaticResource CheckBoxStyle}"/>
+        <CheckBox x:Name="IPs" Content="Indexing Policies" Style="{StaticResource CheckBoxStyle}"/>
+        <CheckBox x:Name="PKs" Content="Partition Keys" Style="{StaticResource CheckBoxStyle}"/>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Offer Throughput" Style="{StaticResource TextBlockStyle}"/>
+            <TextBox x:Name="OfferThroughput" Text="10000" Style="{StaticResource TextBoxStyle}" VerticalAlignment="Top"/>
         </StackPanel>
-    </Grid>
+    </StackPanel>
 </Page>
