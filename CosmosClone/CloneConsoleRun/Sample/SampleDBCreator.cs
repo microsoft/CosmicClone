@@ -2,23 +2,21 @@
 // Licensed under the MIT License.
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Azure.Documents;
-using Microsoft.Azure.Documents.Client;
-using CosmosCloneCommon.Utility;
 //using CollectionMigrator.Model;
-using System.Diagnostics;
-using Microsoft.Azure.CosmosDB.BulkExecutor;
-using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
-using Microsoft.Azure.Documents.Linq;
 using logger = CosmosCloneCommon.Utility.CloneLogger;
 
-namespace CosmosCloneCommon.Sample
+namespace CloneConsoleRun.Sample
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using CosmosCloneCommon.Utility;
+    using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
+    using Microsoft.Azure.Documents;
+    using Microsoft.Azure.Documents.Client;
+
     public class SampleDBCreator
     {
         #region declare variables

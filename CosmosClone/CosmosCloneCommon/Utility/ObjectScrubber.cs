@@ -4,12 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CosmosCloneCommon.Model;
-using CosmosCloneCommon.Sample;
 
 namespace CosmosCloneCommon.Utility
 {
