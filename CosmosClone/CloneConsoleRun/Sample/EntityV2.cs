@@ -1,16 +1,12 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using CosmosCloneCommon.Model;
-
-namespace CosmosCloneCommon.Sample
+namespace CloneConsoleRun.Sample
 {
+    using System;
+    using System.Collections.Generic;
+    using CosmosCloneCommon.Model;
+
     public class EntityV2
     {        
         public string FullName { get; set; }
@@ -28,14 +24,14 @@ namespace CosmosCloneCommon.Sample
         public static EntityV2 getRandomEntity()
         {
             var entity = new EntityV2();
-            entity.SuperId = RandomNumberGenerator.getNext();
+            entity.SuperId = RandomNumberGenerator.GetNext();
             entity.id = Guid.NewGuid().ToString();
             entity.FullName = "Test Sample Name " + entity.SuperId.ToString();
             entity.Description = "Test Sample Description " + entity.SuperId.ToString();
             entity.EntityType = RandomNumberGenerator.GetRandomEntityType();
-            var employeeid = RandomNumberGenerator.getNext();
+            var employeeid = RandomNumberGenerator.GetNext();
             entity.EmailAddress = "intialTest"+ employeeid .ToString()+ "@test.com";
-            entity.PhoneNumber = RandomNumberGenerator.getNext().ToString();
+            entity.PhoneNumber = RandomNumberGenerator.GetNext().ToString();
             entity.IsActive = true;
             entity.ModifiedTime = DateTime.UtcNow;
 

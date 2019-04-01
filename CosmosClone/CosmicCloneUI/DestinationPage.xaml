@@ -9,38 +9,40 @@
       Title="DestinationPage">
 
     <Grid>
-        <StackPanel Margin="20,20">
-            <!--<Label Content="Enter Target Connection Details" FontSize="15" />-->
-            <TextBlock FontSize="15"> 
-                <Span>Enter</Span> 
-                <Span  FontWeight="Bold">Target</Span>
-                <Span>connection details</Span>
-            </TextBlock>
-            <StackPanel Orientation="Horizontal" Margin="0,10,0,10">
-                <Label Content="Url" Width="200" FontSize="15" />
-                <TextBox x:Name="TargetURL" Width="400" VerticalContentAlignment="Center" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Label Content="Access Key" Width="200" FontSize="15" />
-                <TextBox x:Name="TargetKey" Width="400" VerticalContentAlignment="Center" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Label Content="Database" Width="200" FontSize="15" />
-                <TextBox x:Name="TargetDB" Width="400" VerticalContentAlignment="Center" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Label Content="Collection" Width="200" FontSize="15" />
-                <TextBox x:Name="TargetCollection" Width="400" VerticalContentAlignment="Center" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Image x:Name="ConnectionIcon" Width="30" Height="30" Margin="0,0,10,0"/>
-                <Button Width="150" Height="40" Click="BtnTestTarget" HorizontalAlignment="Right" Margin="0,0,160,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Test Connection" VerticalAlignment="Center" Margin="5" />
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-            <TextBlock Name="ConnectionTestMsg" TextWrapping="Wrap" Text="" Height="35" Margin="100,10,100,5"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource TextBlockStyle}"> 
+            Enter <Bold>Target</Bold> connection details
+        </TextBlock>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Url" Style="{StaticResource GridRowLabelStyle}" />
+        <TextBox x:Name="TargetURL" Grid.Row="1" Grid.Column="1" Style="{StaticResource GridRowTextBoxStyle}" />
+
+        <Label Content="Access Key" Grid.Row="2" Grid.Column="0" Style="{StaticResource GridRowLabelStyle}" />
+        <TextBox x:Name="TargetKey" Grid.Row="2" Grid.Column="1" Style="{StaticResource GridRowTextBoxStyle}" />
+
+        <Label Content="Database" Grid.Row="3" Grid.Column="0" Style="{StaticResource GridRowLabelStyle}" />
+        <TextBox x:Name="TargetDB" Grid.Row="3" Grid.Column="1" Style="{StaticResource GridRowTextBoxStyle}" />
+
+        <Label Content="Collection" Grid.Row="4" Grid.Column="0" Style="{StaticResource GridRowLabelStyle}" />
+        <TextBox x:Name="TargetCollection" Grid.Row="4" Grid.Column="1" Style="{StaticResource GridRowTextBoxStyle}" />
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Image x:Name="ConnectionIcon" Width="30" Height="30"/>
+            <Button Click="BtnTestTarget" Content="Test Connection" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
+        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Name="ConnectionTestMsg" TextWrapping="Wrap" />
     </Grid>
 </Page>

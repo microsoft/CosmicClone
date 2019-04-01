@@ -1,19 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.Documents;
-using CosmosCloneCommon.Model;
 using logger = CosmosCloneCommon.Utility.CloneLogger;
-using CosmosCloneCommon.Utility;
 
-namespace CosmosCloneCommon.Sample
+namespace CloneConsoleRun.Sample
 {
+    using System;
+    using System.Threading.Tasks;
+    using CosmosCloneCommon.Utility;
+    using Microsoft.Azure.Documents;
+    using Microsoft.Azure.Documents.Client;
+
     public class CosmosSampleDBHelper
     {        
         private ConnectionPolicy ConnectionPolicy;

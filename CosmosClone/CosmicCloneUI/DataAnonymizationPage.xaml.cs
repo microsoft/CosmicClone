@@ -51,18 +51,11 @@ namespace CosmicCloneUI
 
         private void CreateScrubRule(ScrubRule scrubRule = null)
         {
-            StackPanel parentStackPanelLeft = (StackPanel)this.FindName("RulesStackPanelLeft");
-            StackPanel parentStackPanelRight = (StackPanel)this.FindName("RulesStackPanelRight");
-            
+
+            WrapPanel parentStackPanelLeft = (WrapPanel) this.FindName("WrapPanel");
+
             int newRuleIndex = newIndex(scrubRule);
-            if (newRuleIndex % 2 == 1)
-            {
-                AddRuleWithData(parentStackPanelLeft, newRuleIndex, scrubRule);
-            }
-            else
-            {
-                AddRuleWithData(parentStackPanelRight, newRuleIndex, scrubRule);
-            }            
+            AddRuleWithData(parentStackPanelLeft, newRuleIndex, scrubRule);
         }
 
         int newIndex(ScrubRule scrubRule = null)
@@ -82,7 +75,7 @@ namespace CosmicCloneUI
             }
             return newRuleIndex;
         }
-        void AddRuleWithData(StackPanel parentStackPanel, int ruleIndex, ScrubRule scrubRule = null)
+        void AddRuleWithData(WrapPanel parentStackPanel, int ruleIndex, ScrubRule scrubRule = null)
         {
             StackPanel RuleHeadersp = new StackPanel();
             RuleHeadersp.Orientation = Orientation.Horizontal;
@@ -284,30 +277,20 @@ namespace CosmicCloneUI
             var btnDelete = (Button)sender;
             string expname = "RuleExpander_" + btnDelete.Name.Substring(btnDelete.Name.IndexOf('_')+1);
 
-            StackPanel parentStackPanel = (StackPanel)this.FindName("RulesStackPanel");
-            UIElementCollection ChildrenSPs = parentStackPanel.Children;
-            foreach (UIElement LeftRightSPUI in ChildrenSPs)
+            WrapPanel wrapPanel = (WrapPanel)this.FindName("WrapPanel");
+            foreach (UIElement SPUI in wrapPanel.Children)
             {
-                StackPanel sp = (StackPanel)LeftRightSPUI;
-                UIElementCollection uiElementsLeftRight = sp.Children;
-
-                foreach (UIElement SPUI in uiElementsLeftRight)
+                Expander exp = (Expander)SPUI;
+                if (exp.Name == expname)
                 {
-                    Expander exp = (Expander)SPUI;
-                    if (exp.Name == expname)
-                    {
-                        sp.Children.Remove(SPUI);
-                        break;
-                    }               
+                    wrapPanel.Children.Remove(SPUI);
+                    break;
                 }
             }
 
             var rules = getScrubRules();
             //Delete all scrub rules
-            StackPanel parentStackPanelLeft = (StackPanel)this.FindName("RulesStackPanelLeft");
-            StackPanel parentStackPanelRight = (StackPanel)this.FindName("RulesStackPanelRight");
-            parentStackPanelLeft.Children.RemoveRange(0, parentStackPanelLeft.Children.Count);
-            parentStackPanelRight.Children.RemoveRange(0, parentStackPanelRight.Children.Count);
+            wrapPanel.Children.RemoveRange(0, wrapPanel.Children.Count);
 
             //Re initialize rule index
             this.RuleIndex = 1;
@@ -322,87 +305,82 @@ namespace CosmicCloneUI
         public List<ScrubRule> getScrubRules()
         {
             //List<ScrubRule> sb = new List<ScrubRule>();
-            TextBox filterCondition = (TextBox)this.FindName("FilterCondition");
+            TextBox filterCondition = (TextBox) this.FindName("FilterCondition");
             //sb.filterQuery = filterCondition.Text;
-            List<ScrubRule> srList = new List<ScrubRule>();            
+            List<ScrubRule> srList = new List<ScrubRule>();
 
-            StackPanel parentStackPanel = (StackPanel)this.FindName("RulesStackPanel");
-            UIElementCollection ChildrenSPs = parentStackPanel.Children;
-
-            foreach (UIElement LeftRightSPUI in ChildrenSPs)
+            WrapPanel wrapPanel = (WrapPanel) this.FindName("WrapPanel");
+            foreach (UIElement SPUI in wrapPanel.Children)
             {
-                StackPanel sp = (StackPanel)LeftRightSPUI;
-                UIElementCollection uiElementsLeftRight = sp.Children;
+                Expander exp = (Expander) SPUI;
+                StackPanel lrsp = (StackPanel) exp.Content;
+                UIElementCollection uiElementsSP = lrsp.Children;
 
-                foreach (UIElement SPUI in uiElementsLeftRight)
+                ScrubRule sr = new ScrubRule();
+
+                foreach (UIElement uiElementSP in uiElementsSP)
                 {
-                    Expander exp = (Expander)SPUI;
-                    StackPanel lrsp = (StackPanel)exp.Content;
-                    UIElementCollection uiElementsSP = lrsp.Children;
+                    StackPanel tempSP = (StackPanel) uiElementSP;
+                    UIElementCollection uiElements = tempSP.Children;
 
-                    ScrubRule sr = new ScrubRule();
-
-                    foreach (UIElement uiElementSP in uiElementsSP)
+                    foreach (UIElement uiElement in uiElements)
                     {
-                        StackPanel tempSP = (StackPanel)uiElementSP;
-                        UIElementCollection uiElements = tempSP.Children;
-                        
-                        foreach (UIElement uiElement in uiElements)
+                        if (uiElement.GetType().Name == "Label")
                         {
-                            if (uiElement.GetType().Name == "Label")
+                            var ruleIdLabel = (Label) uiElement;
+                            int ruleId;
+                            if (int.TryParse(ruleIdLabel.Content.ToString(), out ruleId))
                             {
-                                var ruleIdLabel = (Label)uiElement;
-                                int ruleId;
-                                if (int.TryParse(ruleIdLabel.Content.ToString(), out ruleId))
-                                {
-                                    sr.RuleId = ruleId;
-                                }
-                                else sr.RuleId = 0;
+                                sr.RuleId = ruleId;
                             }
+                            else sr.RuleId = 0;
+                        }
 
-                            if (uiElement.GetType().Name == "TextBox")
+                        if (uiElement.GetType().Name == "TextBox")
+                        {
+                            TextBox tb = (TextBox) uiElement;
+                            string name = tb.Name.Substring(0, tb.Name.Length - 1);
+
+                            if (name == "Filter")
                             {
-                                TextBox tb = (TextBox)uiElement;
-                                string name = tb.Name.Substring(0, tb.Name.Length - 1);
-
-                                if (name == "Filter")
-                                {
-                                    sr.FilterCondition = tb.Text.Trim();
-                                }
-                                else if (name == "ScrubAttribute")
-                                {
-                                    sr.PropertyName = tb.Text.Trim();
-                                }
-                                else if (name == "ScrubValue")
-                                {
-                                    sr.UpdateValue = tb.Text.Trim();
-                                }
+                                sr.FilterCondition = tb.Text.Trim();
                             }
-                            if (uiElement.GetType().Name == "ComboBox")
+                            else if (name == "ScrubAttribute")
                             {
-                                ComboBox cb = (ComboBox)uiElement;
-                                string name = cb.Name.Substring(0, cb.Name.Length - 1);
-                                if (name == "ScrubType")
-                                {
-                                    //sr.Type = (RuleType) Enum.Parse(typeof(RuleType), cb.Text);
-                                    RuleType rType;
-
-                                    if (Enum.TryParse<RuleType>(cb.Text, out rType))
-                                    {
-                                        sr.Type = rType;
-                                    }
-                                    else
-                                    {
-                                        sr.Type = null;                                       
-                                    }
-                                }
+                                sr.PropertyName = tb.Text.Trim();
+                            }
+                            else if (name == "ScrubValue")
+                            {
+                                sr.UpdateValue = tb.Text.Trim();
                             }
                         }
 
+                        if (uiElement.GetType().Name == "ComboBox")
+                        {
+                            ComboBox cb = (ComboBox) uiElement;
+                            string name = cb.Name.Substring(0, cb.Name.Length - 1);
+                            if (name == "ScrubType")
+                            {
+                                //sr.Type = (RuleType) Enum.Parse(typeof(RuleType), cb.Text);
+                                RuleType rType;
+
+                                if (Enum.TryParse<RuleType>(cb.Text, out rType))
+                                {
+                                    sr.Type = rType;
+                                }
+                                else
+                                {
+                                    sr.Type = null;
+                                }
+                            }
+                        }
                     }
-                    srList.Add(sr);
-                }                
+
+                }
+
+                srList.Add(sr);
             }
+
             return srList;
         }
 
@@ -497,10 +475,8 @@ namespace CosmicCloneUI
                 var orderedRules = rules.OrderBy(o => o.RuleId).ToList();
                 
                 //Delete all scrub rules
-                StackPanel parentStackPanelLeft = (StackPanel)this.FindName("RulesStackPanelLeft");
-                StackPanel parentStackPanelRight = (StackPanel)this.FindName("RulesStackPanelRight");
-                parentStackPanelLeft.Children.RemoveRange(0, parentStackPanelLeft.Children.Count);
-                parentStackPanelRight.Children.RemoveRange(0, parentStackPanelRight.Children.Count);
+                WrapPanel wrapPanel = (WrapPanel)this.FindName("WrapPanel");
+                wrapPanel.Children.Clear();
 
                 //Re initialize rule index
                 this.RuleIndex = 1;

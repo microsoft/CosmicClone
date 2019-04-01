@@ -4,6 +4,36 @@
              xmlns:local="clr-namespace:CosmicCloneUI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="BaseFontSize" TargetType="Control">
+            <Setter Property="FontSize" Value="15px"/>
+        </Style>
+        <Style x:Key="GridRowLabelStyle" TargetType="Label" BasedOn="{StaticResource BaseFontSize}">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource BaseFontSize}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="Width" Value="80px"/>
+            <Setter Property="Margin" Value="10 0 0 0"/>
+        </Style>
+        <Style x:Key="GridRowTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource BaseFontSize}">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="CheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource BaseFontSize}">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="IsChecked" Value="True"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+        </Style>
+        <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15px"/>
+            <Setter Property="Margin" Value="0 0 0 10"/>
+        </Style>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="100px"/>
+            <Setter Property="Margin" Value="10 0 0 0"/>
+        </Style>
+        <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+            <Setter Property="Height" Value="15px"/>
+        </Style>
     </Application.Resources>
 </Application>

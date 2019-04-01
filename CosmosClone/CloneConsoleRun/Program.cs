@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using CosmosCloneCommon;
 using CosmosCloneCommon.Migrator;
 using CosmosCloneCommon.Model;
-using CosmosCloneCommon.Sample;
 using CosmosCloneCommon.Utility;
 using logger = CosmosCloneCommon.Utility.CloneLogger;
 using Newtonsoft.Json;
