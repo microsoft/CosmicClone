@@ -157,12 +157,17 @@ namespace CosmicCloneUI
             }
             else if (GetPageNumber(currentPage) == 2)
             {
-                CloneSettings.CopyStoredProcedures = ((CheckBox)currentPage.FindName("SPs")).IsChecked.Value;
-                CloneSettings.CopyUDFs = ((CheckBox)currentPage.FindName("UDFs")).IsChecked.Value;
-                CloneSettings.CopyTriggers = ((CheckBox)currentPage.FindName("CosmosTriggers")).IsChecked.Value;
-                CloneSettings.CopyDocuments = ((CheckBox)currentPage.FindName("Documents")).IsChecked.Value;
-                CloneSettings.CopyIndexingPolicy = ((CheckBox)currentPage.FindName("IPs")).IsChecked.Value;
-                CloneSettings.CopyPartitionKey = ((CheckBox)currentPage.FindName("PKs")).IsChecked.Value;
+                var page = ((CloneOptionsPage)currentPage);
+                var valid = page.TestCloneOptions();
+                if (!valid) return false;
+
+                CloneSettings.CopyStoredProcedures = page.SPs.IsChecked.Value;
+                CloneSettings.CopyUDFs = page.UDFs.IsChecked.Value;
+                CloneSettings.CopyTriggers = page.CosmosTriggers.IsChecked.Value;
+                CloneSettings.CopyDocuments = page.Documents.IsChecked.Value;
+                CloneSettings.CopyIndexingPolicy = page.IPs.IsChecked.Value;
+                CloneSettings.CopyPartitionKey = page.PKs.IsChecked.Value;
+                CloneSettings.TargetMigrationOfferThroughputRUs = int.Parse(page.OfferThroughput.Text);
 
                 return true;                
             }

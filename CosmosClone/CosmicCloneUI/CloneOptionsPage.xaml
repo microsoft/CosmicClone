@@ -19,5 +19,9 @@
             <TextBlock Text="Offer Throughput" Style="{StaticResource TextBlockStyle}"/>
             <TextBox x:Name="OfferThroughput" Text="10000" Style="{StaticResource TextBoxStyle}" VerticalAlignment="Top"/>
         </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Image x:Name="ConnectionIcon" Width="30" Height="30"/>
+            <TextBlock Name="ConnectionTestMsg" TextWrapping="Wrap" />
+        </StackPanel>
     </StackPanel>
 </Page>

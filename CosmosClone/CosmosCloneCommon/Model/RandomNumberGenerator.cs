@@ -8,7 +8,7 @@ namespace CosmosCloneCommon.Model
 
     public static class RandomNumberGenerator
     {
-        private static readonly Random _random = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId));;
+        private static readonly Random _random = new Random(unchecked(Environment.TickCount * 31 + Thread.CurrentThread.ManagedThreadId));
         
         public static int GetNext(int maxValue)
         {
