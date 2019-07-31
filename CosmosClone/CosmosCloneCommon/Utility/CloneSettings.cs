@@ -69,8 +69,8 @@ namespace CosmosCloneCommon.Utility
                 EndpointUrl = targetConfigs["EndpointUrl"],
                 AccessKey = targetConfigs["AccessKey"],
                 DatabaseName = targetConfigs["DatabaseName"],
-                CollectionName = targetConfigs["CollectionName"]
-               // OfferThroughputRUs = int.Parse(sourceConfigs["OfferThroughputRUs"])
+                CollectionName = targetConfigs["CollectionName"],
+                OfferThroughputRUs = int.Parse(targetConfigs["OfferThroughputRUs"])
             };
         }
 
@@ -95,6 +95,6 @@ namespace CosmosCloneCommon.Utility
         public string AccessKey { get; set; }
         public string DatabaseName { get; set; }
         public string CollectionName { get; set; }
-       
+        public int OfferThroughputRUs { get; set; }
     }
 }
