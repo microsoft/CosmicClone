@@ -28,20 +28,23 @@ namespace CosmosCloneCommon.Utility
             }
         }
 
-        public static string getFullLog()
+        public static string GetFullLog()
         {
             return _logBuilder.ToString();
         }
+
         public static void LogInfo(string info)
         {
             Console.WriteLine(info);
             _logBuilder.Append("\n"+info);
         }
+
         public static void LogError(string s)
         {
             LogInfo("Error Occurred");
             LogInfo(s);
         }
+
         public static void LogError(Exception e)
         {
             LogInfo("LogError");

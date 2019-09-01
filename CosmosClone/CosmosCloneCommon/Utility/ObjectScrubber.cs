@@ -22,7 +22,7 @@ namespace CosmosCloneCommon.Utility
                 {
                     try
                     {
-                        JToken jToken = getUpdatedJsonArrayValue((JToken)JObject.Parse(strObj), propNames, scrubRule.UpdateValue);
+                        JToken jToken = GetUpdatedJsonArrayValue((JToken)JObject.Parse(strObj), propNames, scrubRule.UpdateValue);
                         scrubbedObjects.Add(jToken);
                     }
                     catch(Exception ex)
@@ -43,7 +43,7 @@ namespace CosmosCloneCommon.Utility
                     try
                     {
                         List<JToken> jTokenList = new List<JToken>();
-                        getPropertyValues((JToken)JObject.Parse(strObj), propNames, ref jTokenList);
+                        GetPropertyValues((JToken)JObject.Parse(strObj), propNames, ref jTokenList);
                         propertyValues.AddRange(jTokenList);
                     }
                     catch (Exception ex)
@@ -62,7 +62,7 @@ namespace CosmosCloneCommon.Utility
                 {
                     try
                     {
-                        JToken jToken = getDocumentShuffledToken((JToken)JObject.Parse(strObj), propNames, ref shuffledTokenQ);
+                        JToken jToken = GetDocumentShuffledToken((JToken)JObject.Parse(strObj), propNames, ref shuffledTokenQ);
                         scrubbedObjects.Add(jToken);
                     }
                     catch (Exception ex)
@@ -84,9 +84,7 @@ namespace CosmosCloneCommon.Utility
             return scrubbedObjects;
         }
 
-       
-
-        public List<JToken> getPropertyValues(JToken token, List<string> propNames, ref List<JToken> jTokenList)
+        public List<JToken> GetPropertyValues(JToken token, List<string> propNames, ref List<JToken> jTokenList)
         {            
             if(jTokenList == null)
             {
@@ -120,7 +118,7 @@ namespace CosmosCloneCommon.Utility
                         }
                         else
                         {
-                            getPropertyValues(jArray[k], propNames.GetRange(1, propNames.Count - 1), ref jTokenList);
+                            GetPropertyValues(jArray[k], propNames.GetRange(1, propNames.Count - 1), ref jTokenList);
                             continue;
                         }
                     }
@@ -141,14 +139,14 @@ namespace CosmosCloneCommon.Utility
                     }
                     else
                     {
-                        getPropertyValues((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), ref jTokenList);
+                        GetPropertyValues((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), ref jTokenList);
                     }
                 }
 
             } 
             return jTokenList;
         }
-        public JToken getDocumentShuffledToken(JToken token, List<string> propNames, ref Queue<JToken> tokenQ)
+        public JToken GetDocumentShuffledToken(JToken token, List<string> propNames, ref Queue<JToken> tokenQ)
         {
             if (token == null || token.Type == JTokenType.Null) return null;
 
@@ -175,7 +173,7 @@ namespace CosmosCloneCommon.Utility
                         }
                         else
                         {
-                            jArray[k] = getDocumentShuffledToken(jArray[k], propNames.GetRange(1, propNames.Count - 1), ref tokenQ);
+                            jArray[k] = GetDocumentShuffledToken(jArray[k], propNames.GetRange(1, propNames.Count - 1), ref tokenQ);
                             continue;
                         }
                     }
@@ -194,7 +192,7 @@ namespace CosmosCloneCommon.Utility
                     }
                     else
                     {
-                        jObj[currentProperty] = getDocumentShuffledToken((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), ref tokenQ);
+                        jObj[currentProperty] = GetDocumentShuffledToken((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), ref tokenQ);
                     }
                     var str3 = jObj.ToString();
                     jTokenResult = (JToken)jObj;
@@ -207,7 +205,7 @@ namespace CosmosCloneCommon.Utility
             return jTokenResult;
         }
 
-        public JToken getUpdatedJsonArrayValue(JToken token, List<string> propNames, string overwritevalue)
+        public JToken GetUpdatedJsonArrayValue(JToken token, List<string> propNames, string overwritevalue)
         {
             if (token == null || token.Type == JTokenType.Null) return null;
 
@@ -237,7 +235,7 @@ namespace CosmosCloneCommon.Utility
                         {
                             if (jArray[k] != null && jArray[k][currentProperty].Type != JTokenType.Null)
                             {
-                                jArray[k] = getUpdatedJsonArrayValue(jArray[k], propNames.GetRange(1, propNames.Count - 1), overwritevalue);
+                                jArray[k] = GetUpdatedJsonArrayValue(jArray[k], propNames.GetRange(1, propNames.Count - 1), overwritevalue);
                                 continue;
                             }
                             //else return null;
@@ -260,7 +258,7 @@ namespace CosmosCloneCommon.Utility
                     {
                         if (jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
                         {
-                            jObj[currentProperty] = getUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), overwritevalue);
+                            jObj[currentProperty] = GetUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), overwritevalue);
                         }
                         //else return null;
                     }

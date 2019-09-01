@@ -37,7 +37,6 @@ namespace CosmosCloneCommon.Model
         }
         
     }
-    public enum RuleType { SingleValue, NullValue, Shuffle };//Can add random rule type later if required.
-       
 
+    public enum RuleType { SingleValue, NullValue, Shuffle };//Can add random rule type later if required.
 }

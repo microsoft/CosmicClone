@@ -88,7 +88,7 @@ namespace CosmosCloneCommon.Migrator
             await InitializeMigration();
             if (CloneSettings.CopyDocuments)
             {
-                await ReadUploadInbatches((IDocumentQuery<dynamic>)SourceCommonDataFetchQuery);
+                await ReadUploadInBatches((IDocumentQuery<dynamic>)SourceCommonDataFetchQuery);
             }
             else
             {
@@ -161,9 +161,8 @@ namespace CosmosCloneCommon.Migrator
                 }
             }
         }
-
         
-        public async Task ReadUploadInbatches(IDocumentQuery<dynamic> query) 
+        public async Task ReadUploadInBatches(IDocumentQuery<dynamic> query) 
         {
 
             #region batchVariables
@@ -236,7 +235,7 @@ namespace CosmosCloneCommon.Migrator
         {
             //sourceClient = cosmosHelper.GetSourceDocumentDbClient();
             //sourceCollection = await cosmosHelper.GetSourceDocumentCollection(sourceClient);
-            var setCorrect = await cosmosHelper.SetTargetRestOfferThroughPut();
+            var setCorrect = await cosmosHelper.SetTargetRestOfferThroughput();
         }
         public bool SetCompleteOnNoFilterRules()
         {

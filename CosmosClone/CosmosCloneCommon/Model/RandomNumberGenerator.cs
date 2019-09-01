@@ -14,10 +14,12 @@ namespace CosmosCloneCommon.Model
         {
             return _random.Next(0,maxValue);
         }
+
         public static int GetNext()
         {
             return _random.Next(1, 99999999);
         }
+
         public static string GetRandomEntityType()
         {
             switch (RandomNumberGenerator.GetNext(5))
@@ -31,7 +33,6 @@ namespace CosmosCloneCommon.Model
                 case 4:
                     return "Partner";
                 case 0:
-                    return "External";
                 default:
                     return "External";
             }
