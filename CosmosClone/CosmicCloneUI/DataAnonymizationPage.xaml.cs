@@ -258,7 +258,8 @@ namespace CosmicCloneUI
         {
             //check comobox status based on it change visibility of scrubvalue stack panel
             var cbox = (ComboBox)sender;
-            if (cbox.SelectedValue.ToString().Equals(RuleType.SingleValue.ToString()))
+            var scrubType = cbox.SelectedValue.ToString();
+            if (scrubType == RuleType.SingleValue.ToString() || scrubType == RuleType.PartialMaskFromLeft.ToString() || scrubType == RuleType.PartialMaskFromRight.ToString())
             {
                 var parentPanel = (StackPanel)cbox.Parent;
                 var gpPanel = (StackPanel)parentPanel.Parent;
