@@ -97,7 +97,6 @@ namespace CosmosCloneCommon.Utility
             return result;
         }
 
-
         public DocumentClient GetSourceDocumentDbClient()
         {
             try
@@ -210,7 +209,6 @@ namespace CosmosCloneCommon.Utility
             }
         }
 
-
         public async Task<DocumentCollection> GetSourceDocumentCollection(DocumentClient sourceClient)
         {
             try
@@ -274,6 +272,7 @@ namespace CosmosCloneCommon.Utility
                 throw;
             }
         }
+
         public IQueryable<T> GetSourceEntityDocumentQuery<T>(DocumentClient sourceClient, int batchSize = -1)
         {
             try
@@ -292,6 +291,7 @@ namespace CosmosCloneCommon.Utility
                 throw;
             }
         }
+
         public IQueryable<T> GetScrubDataDocumentQuery<T>(DocumentClient targetClient,string filterCondition, int batchSize = -1)
         {
             try
@@ -321,7 +321,7 @@ namespace CosmosCloneCommon.Utility
             }
         }
 
-        public async Task<bool> SetTargetRestOfferThroughPut()
+        public async Task<bool> SetTargetRestOfferThroughput()
         {
             using (var client = GetTargetDocumentDbClient())
             {

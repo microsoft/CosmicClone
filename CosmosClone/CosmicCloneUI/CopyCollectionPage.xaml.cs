@@ -34,7 +34,7 @@ namespace CosmicCloneUI
 
         public void SetStatus()
         {
-            //StatusTextBlock.Text = CloneLogger.getFullLog();
+            //StatusTextBlock.Text = CloneLogger.GetFullLog();
             
         }
 

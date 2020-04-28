@@ -340,17 +340,16 @@ namespace CosmicCloneUI
                         if (uiElement.GetType().Name == "TextBox")
                         {
                             TextBox tb = (TextBox) uiElement;
-                            string name = tb.Name.Substring(0, tb.Name.Length - 1);
 
-                            if (name == "Filter")
+                            if (tb.Name.StartsWith("Filter"))
                             {
                                 sr.FilterCondition = tb.Text.Trim();
                             }
-                            else if (name == "ScrubAttribute")
+                            else if (tb.Name.StartsWith("ScrubAttribute"))
                             {
                                 sr.PropertyName = tb.Text.Trim();
                             }
-                            else if (name == "ScrubValue")
+                            else if (tb.Name.StartsWith("ScrubValue"))
                             {
                                 sr.UpdateValue = tb.Text.Trim();
                             }
@@ -359,8 +358,7 @@ namespace CosmicCloneUI
                         if (uiElement.GetType().Name == "ComboBox")
                         {
                             ComboBox cb = (ComboBox) uiElement;
-                            string name = cb.Name.Substring(0, cb.Name.Length - 1);
-                            if (name == "ScrubType")
+                            if (cb.Name.StartsWith("ScrubType"))
                             {
                                 //sr.Type = (RuleType) Enum.Parse(typeof(RuleType), cb.Text);
                                 RuleType rType;
