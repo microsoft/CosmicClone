@@ -89,6 +89,8 @@ The ‘Scrub Type’ field provides options such as
 *	Single value: Replace the attribute value with a fixed value
 *	Null Value: Empty the attribute content.
 *	Shuffle: Random shuffle the attribute values across all documents of the collection.
+*  PartialMaskFromLeft: Masks the the attribute value partially starting from left with the given value
+*  PartialMaskFromRight: Masks the attribute value partially starting from right with the given value
 
 
 **Sample rule1**
@@ -102,6 +104,12 @@ This shuffles the Full name attribute value between all documents.
 ![screen6](/docs/images/sRule2.png)
 
 To update key values of the Nested Entities you can configure an anonymization rule as above. Note the Filter Query that tells the tool to perform this operation only if the EntityType attribute of the document is an “Individual”. 
+
+**Sample rule3**
+
+![screen10](/docs/images/sRule3.png)
+
+To mask a given attribute value partially with some text, you can use the Scrub Type options "PartialMaskFromLeft" or "PartialMaskFromRight" 
 
 Note there are options on the anonymization screen to validate, save and load these rules
 
