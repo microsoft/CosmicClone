@@ -36,11 +36,13 @@ namespace CosmosCloneCommon.Migrator
         public long TotalRecordsScrubbed { get; set; }
         public long TotalRecordsToScrub { get; set; }
         #endregion
+
         public DataScrubMigrator()
         {
             cosmosHelper = new CosmosDBHelper();
             cosmosBulkImporter = new CosmosBulkImporter();
         }
+
         public async Task<bool> StartScrub(List<ScrubRule> scrubRules)
         {
             DataScrubMigrator.scrubRules = scrubRules;
@@ -63,7 +65,7 @@ namespace CosmosCloneCommon.Migrator
                 logger.LogInfo($"Scrub rules found {sRules.Count}");
                 long filterRecordCount = cosmosHelper.GetFilterRecordCount(filterCondition);
                 ScrubDataFetchQuery = cosmosHelper.GetScrubDataDocumentQuery<string>(targetClient, filterCondition, CloneSettings.ReadBatchSize);
-                await ReadUploadInbatches((IDocumentQuery<string>)ScrubDataFetchQuery, sRules);
+                await ReadUploadInBatches((IDocumentQuery<string>)ScrubDataFetchQuery, sRules);
 
                 foreach(var srule in DataScrubMigrator.scrubRules)
                 {
@@ -77,6 +79,7 @@ namespace CosmosCloneCommon.Migrator
 
             return true;
         }
+
         public async Task InitializeMigration()
         {
             logger.LogInfo("Initialize data scrubbing");
@@ -85,7 +88,7 @@ namespace CosmosCloneCommon.Migrator
             await cosmosBulkImporter.InitializeBulkExecutor(targetClient, targetCollection);
         }      
 
-        public async Task ReadUploadInbatches(IDocumentQuery<string> query, List<ScrubRule> scrubRules)
+        public async Task ReadUploadInBatches(IDocumentQuery<string> query, List<ScrubRule> scrubRules)
         {
             #region batchVariables
             //initialize Batch Process variables                    
@@ -127,7 +130,7 @@ namespace CosmosCloneCommon.Migrator
                     catch(Exception ex)
                     {
                         logger.LogError(ex);
-                        throw (ex);                        
+                        throw;                        
                     }                                    
                 }
                 badEntities = uploadResponse.BadInputDocuments;
@@ -172,7 +175,6 @@ namespace CosmosCloneCommon.Migrator
                 System.Threading.Thread.Sleep(ReadDelaybetweenRequestsInMs);
                 return entities;
             }
-
         }
     }
 }
