@@ -1,18 +1,12 @@
-﻿using CosmosCloneCommon.Utility;
+﻿using CosmicCloneUI.Extensions;
+using CosmosCloneCommon.Utility;
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using static System.Environment.SpecialFolder;
+using static CosmosCloneCommon.Utility.CloneSettings;
 
 namespace CosmicCloneUI
 {
@@ -58,6 +52,21 @@ namespace CosmicCloneUI
                 ConnectionTestMsg.Text = result.Message;
             }
             return result.IsSuccess;
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e) => new SaveFileDialog().SaveFile(MyDocuments, "Source", SourceSettings);
+
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = new OpenFileDialog().LoadFile<CosmosCollectionValues>(MyDocuments, "Source");
+
+            if (settings != null)
+            {
+                SourceURL.Text = settings.EndpointUrl;
+                SourceKey.Text = settings.AccessKey;
+                SourceDB.Text = settings.DatabaseName;
+                SourceCollection.Text = settings.CollectionName;
+            }
         }
     }
 }

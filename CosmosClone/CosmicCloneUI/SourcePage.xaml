@@ -41,6 +41,8 @@
         <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Image x:Name="ConnectionIcon" Width="30" Height="30"/>
             <Button Click="BtnTestSource" Content="Test Connection" Style="{StaticResource ButtonStyle}"/>
+            <Button Click="SaveButton_Click" Content="Save" Style="{StaticResource ButtonStyle}"/>
+            <Button Click="LoadButton_Click" Content="Load" Style="{StaticResource ButtonStyle}" />
         </StackPanel>
         <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Name="ConnectionTestMsg" TextWrapping="Wrap" />
     </Grid>

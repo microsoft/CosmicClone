@@ -102,6 +102,7 @@
     <Compile Include="DestinationPage.xaml.cs">
       <DependentUpon>DestinationPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\FileDialogExtensions.cs" />
     <Compile Include="Models\CloneOptions.cs" />
     <Compile Include="Models\CosmosCollection.cs" />
     <Compile Include="Models\ScrubDetails.cs" />
