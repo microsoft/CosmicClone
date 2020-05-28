@@ -129,6 +129,10 @@ namespace CosmicCloneUI
             scrubTypeSP.Orientation = Orientation.Horizontal;
             scrubTypeSP.Margin = new Thickness(0, 5, 0, 2);
 
+            StackPanel findValueSP = new StackPanel();
+            findValueSP.Orientation = Orientation.Horizontal;
+            findValueSP.Margin = new Thickness(0, 5, 0, 2);
+
             StackPanel scrubValueSP = new StackPanel();
             scrubValueSP.Orientation = Orientation.Horizontal;
             scrubValueSP.Margin = new Thickness(0, 5, 0, 2);
@@ -197,6 +201,19 @@ namespace CosmicCloneUI
 
             ScrubTypeCB.SelectionChanged += new SelectionChangedEventHandler(scrubTypeComboBox_SelectedIndexChanged);
 
+            TextBlock FindValueLabel = new TextBlock();
+            FindValueLabel.Text = "Find";
+            FindValueLabel.FontSize = 15;
+            FindValueLabel.VerticalAlignment = VerticalAlignment.Center;
+            FindValueLabel.Margin = new Thickness(10, 0, 0, 5);
+
+            TextBox FindValueTB = new TextBox();
+            FindValueTB.Name = "FindValue" + ruleIndex;
+            FindValueTB.Width = 150;
+            FindValueTB.HorizontalContentAlignment = HorizontalAlignment.Left;
+            FindValueTB.VerticalAlignment = VerticalAlignment.Center;
+            FindValueTB.Margin = new Thickness(20, 0, 0, 0);
+
             TextBlock ScrubValueLabel = new TextBlock();
             ScrubValueLabel.Text = "Replace with";
             ScrubValueLabel.FontSize = 15;
@@ -217,6 +234,8 @@ namespace CosmicCloneUI
             ScrubTypeLabel.Width = 120;
             ScrubTypeCB.Width = 150;
             ScrubValueLabel.Width = 120;
+            FindValueTB.Width = 150;
+            FindValueLabel.Width = 120;
 
             filterSP.Children.Add(FilterLabel);
             filterSP.Children.Add(FilterTB);
@@ -227,6 +246,10 @@ namespace CosmicCloneUI
             scrubTypeSP.Children.Add(ScrubTypeLabel);
             scrubTypeSP.Children.Add(ScrubTypeCB);
 
+            findValueSP.Children.Add(FindValueLabel);
+            findValueSP.Children.Add(FindValueTB);
+            findValueSP.Visibility = Visibility.Collapsed;
+
             scrubValueSP.Children.Add(ScrubValueLabel);
             scrubValueSP.Children.Add(ScrubValueTB);
             scrubValueSP.Children.Add(RuleIdLabel);
@@ -235,6 +258,7 @@ namespace CosmicCloneUI
             sp.Children.Add(attributeSP);
             sp.Children.Add(filterSP);
             sp.Children.Add(scrubTypeSP);
+            sp.Children.Add(findValueSP);
             sp.Children.Add(scrubValueSP);
 
             exp.Content = sp;
@@ -245,6 +269,7 @@ namespace CosmicCloneUI
                 AttributeScrubTB.Text = scrubRule.PropertyName;
                 if(scrubRule.Type!=null) ScrubTypeCB.SelectedIndex = (int)scrubRule.Type;
                 ScrubValueTB.Text = scrubRule.UpdateValue;
+                FindValueTB.Text = scrubRule.FindValue;
             }
             parentStackPanel.Children.Add(exp);
             if(!SaveRuleButton.IsEnabled)
@@ -263,13 +288,23 @@ namespace CosmicCloneUI
             {
                 var parentPanel = (StackPanel)cbox.Parent;
                 var gpPanel = (StackPanel)parentPanel.Parent;
+                gpPanel.Children[3].Visibility = Visibility.Collapsed;
+                gpPanel.Children[4].Visibility = Visibility.Visible;
+            }
+            else if (scrubType == RuleType.FindAndReplace.ToString())
+            {
+                var parentPanel = (StackPanel)cbox.Parent;
+                var gpPanel = (StackPanel)parentPanel.Parent;
+
                 gpPanel.Children[3].Visibility = Visibility.Visible;
+                gpPanel.Children[4].Visibility = Visibility.Visible;
             }
             else
             {
                 var parentPanel = (StackPanel)cbox.Parent;
                 var gpPanel = (StackPanel)parentPanel.Parent;
-                gpPanel.Children[3].Visibility = Visibility.Hidden;
+                gpPanel.Children[3].Visibility = Visibility.Collapsed;
+                gpPanel.Children[4].Visibility = Visibility.Hidden;
             }
         }
 
@@ -353,6 +388,10 @@ namespace CosmicCloneUI
                             {
                                 sr.UpdateValue = tb.Text.Trim();
                             }
+                            else if (tb.Name.StartsWith("FindValue"))
+                            {
+                                sr.FindValue = tb.Text.Trim();
+                            }
                         }
 
                         if (uiElement.GetType().Name == "ComboBox")
@@ -414,7 +453,11 @@ namespace CosmicCloneUI
                     {
                         validationMessages.Add($"Rule:{rule.RuleId} - Filter condition starts improperly. Sample c.EntityType=\"document\" ");
                     }
-                }               
+                }
+                if (rule.Type == RuleType.FindAndReplace && string.IsNullOrEmpty(rule.FindValue))
+                {
+                    validationMessages.Add($"Rule:{rule.RuleId} - Find is empty");
+                }
             }
             if(validationMessages.Count > 0)
             {

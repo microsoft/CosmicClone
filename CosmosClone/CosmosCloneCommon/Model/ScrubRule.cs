@@ -15,6 +15,7 @@ namespace CosmosCloneCommon.Model
         public int RuleId { get; set; }
         public string FilterCondition { get; set; }
         public string PropertyName { get; set; }
+        public string FindValue { get; set; }
         public string UpdateValue { get; set; }        
 
         public RuleType? Type { get; set; }
@@ -38,5 +39,5 @@ namespace CosmosCloneCommon.Model
         
     }
 
-    public enum RuleType { SingleValue, NullValue, Shuffle, PartialMaskFromLeft, PartialMaskFromRight };//Can add random rule type later if required.     
+    public enum RuleType { SingleValue, NullValue, Shuffle, PartialMaskFromLeft, PartialMaskFromRight, FindAndReplace };//Can add random rule type later if required.     
 }
