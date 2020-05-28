@@ -3,15 +3,13 @@ using Microsoft.Win32;
 using System;
 using System.Globalization;
 using System.IO;
-using System.Windows;
-using static System.Windows.MessageBoxButton;
-using static System.Windows.MessageBoxImage;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace CosmicCloneUI.Extensions
 {
-    public static class FileDialogExtensions
+    public static class Extensions
     {
-
         public static void SaveFile<T>(this SaveFileDialog dialog, Environment.SpecialFolder folder, string fileName, T data)
         {
             dialog.InitialDirectory = Environment.GetFolderPath(folder);
@@ -34,17 +32,24 @@ namespace CosmicCloneUI.Extensions
 
             if (dialog.ShowDialog() == true)
             {
-                try
-                {
-                    return CloneSerializer.XMLDeserialize<T>(File.ReadAllText(dialog.FileName));
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show($"Unable to load {fileName} from file: {dialog.FileName}", $"Failed to load {fileName}", OK, Warning);
-                    return default;
-                }
+                var text = File.ReadAllText(dialog.FileName);
+                return CloneSerializer.XMLDeserialize<T>(text);
             }
             return default;
+        }
+
+        private readonly static byte[] entropy = Encoding.Unicode.GetBytes("Add some spice to the mix");
+
+        public static string Encrypt(this string value)
+        {
+            var encrypted = ProtectedData.Protect(Encoding.Unicode.GetBytes(value), entropy, DataProtectionScope.CurrentUser);
+            return Convert.ToBase64String(encrypted);
+        }
+
+        public static string Decrypt(this string value)
+        {
+            var decrypted = ProtectedData.Unprotect(Convert.FromBase64String(value), entropy, DataProtectionScope.CurrentUser);
+            return Encoding.Unicode.GetString(decrypted);
         }
     }
 }

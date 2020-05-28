@@ -8,8 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using CosmicCloneUI.Extensions;
-using static System.Environment.SpecialFolder;
-using static CosmosCloneCommon.Utility.CloneSettings;
 
 namespace CosmicCloneUI
 {
@@ -57,18 +55,38 @@ namespace CosmicCloneUI
             return result.IsSuccess;
         }
 
-         private void SaveButton_Click(object sender, RoutedEventArgs e) => new SaveFileDialog().SaveFile(MyDocuments, "Target", SourceSettings);
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        { 
+            var settings = new CosmosCollectionValues
+            {
+                EndpointUrl = TargetURL.Text.Encrypt(),
+                AccessKey = TargetKey.Text.Encrypt(),
+                DatabaseName = TargetDB.Text.Encrypt(),
+                CollectionName = TargetCollection.Text.Encrypt()
+            };
+            
+            new SaveFileDialog().SaveFile(Environment.SpecialFolder.MyDocuments, "Target", settings);
+        }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
-            var settings = new OpenFileDialog().LoadFile<CosmosCollectionValues>(MyDocuments, "Target");
+            var dialog = new OpenFileDialog();
 
-            if (settings != null)
+            try
             {
-                TargetURL.Text = settings.EndpointUrl;
-                TargetKey.Text = settings.AccessKey;
-                TargetDB.Text =  settings.DatabaseName;
-                TargetCollection.Text = settings.CollectionName;
+                var settings = dialog.LoadFile<CosmosCollectionValues>(Environment.SpecialFolder.MyDocuments, "Target");
+
+                if (settings != null)
+                {
+                    TargetURL.Text = settings.EndpointUrl.Decrypt();
+                    TargetKey.Text = settings.AccessKey.Decrypt();
+                    TargetDB.Text = settings.DatabaseName.Decrypt();
+                    TargetCollection.Text = settings.CollectionName.Decrypt();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show($"Unable to load Target from file: {dialog.FileName}", $"Failed to load Target", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
     }
