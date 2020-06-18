@@ -22,6 +22,7 @@ The utility helps in below
 *	Create collections with similar settings(indexes, partition, TTL etc)
 *	Anonymize data through scrubbing or shuffling of sensitive data in documents.
 
+**Disclaimer**: Please note this is not an official tool from the Azure Cosmos DB team, but a utility developed by an independent developer within Microsoft IT and offered on Github as a sample.
 
 ## Deployment Steps
 1. Just Compile and Run the Code.
