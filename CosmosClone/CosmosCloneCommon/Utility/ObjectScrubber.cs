@@ -16,13 +16,13 @@ namespace CosmosCloneCommon.Utility
             //var scrubbedObjects = new List<string>();
             var scrubbedObjects = new List<JToken>();
             var propNames = scrubRule.PropertyName.Split('.').ToList();
-            if(scrubRule.Type == RuleType.NullValue || scrubRule.Type == RuleType.SingleValue || scrubRule.Type == RuleType.PartialMaskFromLeft || scrubRule.Type == RuleType.PartialMaskFromRight)
+            if(scrubRule.Type == RuleType.NullValue || scrubRule.Type == RuleType.SingleValue || scrubRule.Type == RuleType.PartialMaskFromLeft || scrubRule.Type == RuleType.PartialMaskFromRight || scrubRule.Type == RuleType.FindAndReplace)
             {
                 foreach (var strObj in srcList)
                 {
                     try
                     {
-                        JToken jToken = GetUpdatedJsonArrayValue((JToken)JObject.Parse(strObj), propNames, scrubRule.UpdateValue, scrubRule.Type);
+                        JToken jToken = GetUpdatedJsonArrayValue((JToken)JObject.Parse(strObj), propNames, scrubRule.FindValue, scrubRule.UpdateValue, scrubRule.Type);
                         scrubbedObjects.Add(jToken);
                     }
                     catch(Exception ex)
@@ -205,7 +205,7 @@ namespace CosmosCloneCommon.Utility
             return jTokenResult;
         }
 
-        public JToken GetUpdatedJsonArrayValue(JToken token, List<string> propNames, string overwritevalue, RuleType? ruleType)
+        public JToken GetUpdatedJsonArrayValue(JToken token, List<string> propNames, string findvalue, string overwritevalue, RuleType? ruleType)
         {
             if (token == null || token.Type == JTokenType.Null) return null;
 
@@ -227,7 +227,7 @@ namespace CosmosCloneCommon.Utility
                         {
                             if (jArray[k][currentProperty] != null && jArray[k][currentProperty].Type != JTokenType.Null)
                             {
-                                jArray[k][currentProperty] = ScrubTokenValue(ruleType, jArray[k][currentProperty], overwritevalue);
+                                jArray[k][currentProperty] = ScrubTokenValue(ruleType, jArray[k][currentProperty], findvalue, overwritevalue);
                             }
                             continue;
                         }
@@ -235,7 +235,7 @@ namespace CosmosCloneCommon.Utility
                         {
                             if (jArray[k] != null && jArray[k][currentProperty].Type != JTokenType.Null)
                             {
-                                jArray[k] = GetUpdatedJsonArrayValue(jArray[k], propNames.GetRange(1, propNames.Count - 1), overwritevalue, ruleType);
+                                jArray[k] = GetUpdatedJsonArrayValue(jArray[k], propNames.GetRange(1, propNames.Count - 1), findvalue, overwritevalue, ruleType);
                                 continue;
                             }
                             //else return null;
@@ -251,14 +251,14 @@ namespace CosmosCloneCommon.Utility
                     {
                         if (jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
                         {
-                            jObj[currentProperty] = ScrubTokenValue(ruleType, jObj[currentProperty], overwritevalue);
+                            jObj[currentProperty] = ScrubTokenValue(ruleType, jObj[currentProperty], findvalue, overwritevalue);
                         }
                     }
                     else
                     {
                         if (jObj[currentProperty] != null && jObj[currentProperty].Type != JTokenType.Null)
                         {
-                            jObj[currentProperty] = GetUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), overwritevalue, ruleType);
+                            jObj[currentProperty] = GetUpdatedJsonArrayValue((JToken)jObj[currentProperty], propNames.GetRange(1, propNames.Count - 1), findvalue, overwritevalue, ruleType);
                         }
                         //else return null;
                     }
@@ -274,7 +274,7 @@ namespace CosmosCloneCommon.Utility
             return jTokenResult;
         }
         
-        private JToken ScrubTokenValue(RuleType? ruleType, JToken tokenToBeScrubbed, string overwriteValue)
+        private JToken ScrubTokenValue(RuleType? ruleType, JToken tokenToBeScrubbed, string findValue, string overwriteValue)
         {
             if (ruleType.HasValue)
             {
@@ -299,6 +299,13 @@ namespace CosmosCloneCommon.Utility
                     else
                     {
                         tokenToBeScrubbed = string.Concat(oldValue.Remove(oldValue.Length - overwriteValue.Length, overwriteValue.Length), overwriteValue);
+                    }
+                }
+                else if (ruleType == RuleType.FindAndReplace)
+                {
+                    if (oldValue.Contains(findValue))
+                    {
+                        tokenToBeScrubbed = oldValue.Replace(findValue, overwriteValue);
                     }
                 }
                 else
