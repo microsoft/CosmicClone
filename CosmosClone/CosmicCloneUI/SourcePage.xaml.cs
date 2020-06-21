@@ -1,18 +1,10 @@
-﻿using CosmosCloneCommon.Utility;
+﻿using CosmicCloneUI.Extensions;
+using CosmosCloneCommon.Utility;
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CosmicCloneUI
 {
@@ -58,6 +50,42 @@ namespace CosmicCloneUI
                 ConnectionTestMsg.Text = result.Message;
             }
             return result.IsSuccess;
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settings = new CosmosCollectionValues
+            {
+                EndpointUrl = SourceURL.Text.Encrypt(),
+                AccessKey = SourceKey.Text.Encrypt(),
+                DatabaseName = SourceDB.Text.Encrypt(),
+                CollectionName = SourceCollection.Text.Encrypt()
+            };
+            
+            new SaveFileDialog().SaveFile(Environment.SpecialFolder.MyDocuments, "Source", settings);
+        }
+
+        private void LoadButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog();
+
+            try
+            {
+                var settings = dialog.LoadFile<CosmosCollectionValues>(Environment.SpecialFolder.MyDocuments, "Source");
+
+                if (settings != null)
+                {
+                    SourceURL.Text = settings.EndpointUrl.Decrypt();
+                    SourceKey.Text = settings.AccessKey.Decrypt();
+                    SourceDB.Text =  settings.DatabaseName.Decrypt();
+                    SourceCollection.Text = settings.CollectionName.Decrypt();
+                }
+            } 
+            catch(Exception)
+            {
+                MessageBox.Show($"Unable to load Source from file: {dialog.FileName}", $"Failed to load Source", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
         }
     }
 }
