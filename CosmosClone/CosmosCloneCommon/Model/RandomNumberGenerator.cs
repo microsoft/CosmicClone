@@ -38,6 +38,13 @@ namespace CosmosCloneCommon.Model
             }
         }
 
+        public static string RandomNumber()
+        {
+            Random random = new Random();
+            return random.Next().ToString();
+        }
+               
+
         //A simple implementation of Fisher yates algorithm for shuffling
         public static List<T> Shuffle<T>(List<T> list)
         {

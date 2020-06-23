@@ -16,7 +16,7 @@ namespace CosmosCloneCommon.Utility
             //var scrubbedObjects = new List<string>();
             var scrubbedObjects = new List<JToken>();
             var propNames = scrubRule.PropertyName.Split('.').ToList();
-            if(scrubRule.Type == RuleType.NullValue || scrubRule.Type == RuleType.SingleValue || scrubRule.Type == RuleType.PartialMaskFromLeft || scrubRule.Type == RuleType.PartialMaskFromRight)
+            if(scrubRule.Type == RuleType.NullValue || scrubRule.Type == RuleType.SingleValue || scrubRule.Type == RuleType.PartialMaskFromLeft || scrubRule.Type == RuleType.PartialMaskFromRight || scrubRule.Type == RuleType.RandomEmailValue)
             {
                 foreach (var strObj in srcList)
                 {
@@ -72,7 +72,7 @@ namespace CosmosCloneCommon.Utility
                         throw ;
                     }
                 }
-            }
+            }           
             else
             {
                 foreach (var strObj in srcList)
@@ -301,6 +301,14 @@ namespace CosmosCloneCommon.Utility
                         tokenToBeScrubbed = string.Concat(oldValue.Remove(oldValue.Length - overwriteValue.Length, overwriteValue.Length), overwriteValue);
                     }
                 }
+                else if (ruleType == RuleType.RandomEmailValue)
+                {
+                    var emailvalues = oldValue.Split('@');
+                    var random = RandomNumberGenerator.RandomNumber();
+                    var newvalue = oldValue.Replace(emailvalues.FirstOrDefault(), random);
+                    tokenToBeScrubbed = newvalue;
+
+                }
                 else
                 {
                     tokenToBeScrubbed = overwriteValue;
@@ -309,5 +317,7 @@ namespace CosmosCloneCommon.Utility
 
             return tokenToBeScrubbed;
         }
+     
     }
 }
+
