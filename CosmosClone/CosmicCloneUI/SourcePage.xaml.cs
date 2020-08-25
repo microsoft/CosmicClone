@@ -41,7 +41,8 @@ namespace CosmicCloneUI
                 EndpointUrl = SourceURL.Text.ToString(),
                 AccessKey = SourceKey.Text.ToString(),
                 DatabaseName = SourceDB.Text.ToString(),
-                CollectionName = SourceCollection.Text.ToString()
+                CollectionName = SourceCollection.Text.ToString(),
+                SelectQuery = SelectQuery.Text.ToString()
             };
 
             var result = cosmosHelper.TestSourceConnection();

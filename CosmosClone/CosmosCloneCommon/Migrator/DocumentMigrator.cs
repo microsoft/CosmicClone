@@ -134,7 +134,7 @@ namespace CosmosCloneCommon.Migrator
             {
                 TotalRecordsInSource = cosmosHelper.GetSourceRecordCount();
                 logger.LogInfo($"Total records in Source: {TotalRecordsInSource} ");
-                SourceCommonDataFetchQuery = cosmosHelper.GetSourceEntityDocumentQuery<dynamic>(sourceClient, CloneSettings.ReadBatchSize);
+                SourceCommonDataFetchQuery = cosmosHelper.GetSourceEntityDocumentQuery<dynamic>(sourceClient, CloneSettings.SourceSettings.SelectQuery, CloneSettings.ReadBatchSize);
                 await cosmosBulkImporter.InitializeBulkExecutor(targetClient, targetCollection);
             }
             else

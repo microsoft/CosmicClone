@@ -16,6 +16,7 @@
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
             <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -38,10 +39,13 @@
         <Label Content="Collection" Grid.Row="4" Grid.Column="0" Style="{StaticResource GridRowLabelStyle}" />
         <TextBox x:Name="SourceCollection" Grid.Row="4" Grid.Column="1" Style="{StaticResource GridRowTextBoxStyle}"/>
 
-        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Label Content="SelectCriteria" Grid.Row="5" Grid.Column="0" Style="{StaticResource GridRowLabelStyle}" />
+        <TextBox x:Name="SelectQuery" Text="SELECT * FROM c" Grid.Row="5" Grid.Column="1" Style="{StaticResource GridRowTextBoxStyle}"/>
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Image x:Name="ConnectionIcon" Width="30" Height="30"/>
             <Button Click="BtnTestSource" Content="Test Connection" Style="{StaticResource ButtonStyle}"/>
         </StackPanel>
-        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Name="ConnectionTestMsg" TextWrapping="Wrap" />
+        <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Name="ConnectionTestMsg" TextWrapping="Wrap" />
     </Grid>
 </Page>
