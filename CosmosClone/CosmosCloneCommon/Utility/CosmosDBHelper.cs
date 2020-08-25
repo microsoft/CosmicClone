@@ -273,7 +273,7 @@ namespace CosmosCloneCommon.Utility
             }
         }
 
-        public IQueryable<T> GetSourceEntityDocumentQuery<T>(DocumentClient sourceClient, int batchSize = -1)
+        public IQueryable<T> GetSourceEntityDocumentQuery<T>(DocumentClient sourceClient, string selectQuery, int batchSize = -1)
         {
             try
             {
@@ -281,8 +281,7 @@ namespace CosmosCloneCommon.Utility
                 string sourceDatabaseName = CloneSettings.SourceSettings.DatabaseName;
                 string sourceCollectionName = CloneSettings.SourceSettings.CollectionName;
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = batchSize, EnableCrossPartitionQuery = true };
-                string EntityDataQuery = $"SELECT * FROM c";
-                var documentQuery = sourceClient.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(sourceDatabaseName, sourceCollectionName), EntityDataQuery, queryOptions);
+                var documentQuery = sourceClient.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(sourceDatabaseName, sourceCollectionName), selectQuery, queryOptions);
                 return documentQuery;
             }
             catch (Exception ex)

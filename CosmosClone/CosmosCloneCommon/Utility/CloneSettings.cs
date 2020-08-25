@@ -95,6 +95,7 @@ namespace CosmosCloneCommon.Utility
         public string AccessKey { get; set; }
         public string DatabaseName { get; set; }
         public string CollectionName { get; set; }
+        public string SelectQuery { get; set; }
         public int OfferThroughputRUs { get; set; }
     }
 }
